@@ -137,6 +137,7 @@ const CATALOGO = [
   { sessao: "Yuyu Hakusho", id: "yuyu_hakusho", cor: "#ef233c", categoria: "animes_list", itens: [] },
 
   /* ============ FILMES (categoria: "filmes_list") ============ */
+  { sessao: "Os Escolhidos", id: "os_escolhidos_filmes", cor: "#bb2659", categoria: "filmes_list", itens: [] },
   { sessao: "Homem Aranha Através Do Aranhaverso", id: "homem_aranha_atraves_do_aranhaverso_filme", cor: "#e63946", categoria: "filmes_list", itens: [] },
   { sessao: "Oppenheimer", id: "oppenheimer_filme", cor: "#f1faee", categoria: "filmes_list", itens: [] },
   { sessao: "Barbie", id: "barbie_filme", cor: "#a8dadc", categoria: "filmes_list", itens: [] },

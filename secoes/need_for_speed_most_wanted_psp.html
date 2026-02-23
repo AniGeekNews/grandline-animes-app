@@ -48,52 +48,53 @@
       color: #ffffff !important;
     }
 
-    /* ✅ FIX 3: fichaCategoria com imagem vertical e info em colunas */
-    .ficha-categoria {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 10px;
-      align-items: start;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 0 0 8px 8px;
-      margin: 0 -15px 12px -15px;
-      border-left: 4px solid var(--tema-cor, #6366f1);
-    }
-    .ficha-categoria img {
-      width: 48px;
-      height: 72px;
-      border-radius: 4px;
-      object-fit: cover;
-      border: 2px solid var(--tema-cor, #6366f1);
-      display: block;
-      flex-shrink: 0;
-    }
-    .ficha-info {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 8px 14px;
-      min-width: 0;
-    }
-    .info-item {
-      display: flex;
-      flex-direction: column;
-      font-size: 9px;
-    }
-    .info-label {
-      opacity: 0.7;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 7px;
-      letter-spacing: 0.3px;
-    }
-    .info-valor {
-      font-weight: 700;
-      font-size: 10px;
-      color: var(--tema-cor, #6366f1);
-      word-break: break-word;
-    }
+  /* ✅ FIX 3: fichaCategoria com imagem vertical e info em colunas */
+.ficha-categoria {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 0 0 12px 0;
+}
 
+/* imagem totalmente reta */
+.ficha-categoria img {
+  width: 48px;
+  height: 72px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ficha-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px 14px;
+  min-width: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+}
+
+.info-label {
+  opacity: 0.7;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 7px;
+  letter-spacing: 0.3px;
+}
+
+.info-valor {
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--tema-cor, #6366f1);
+  word-break: break-word;
+}
     /* ✅ FIX 4: Barra de Navegação - cor adaptável ao tema */
     .content-nav-bar {
       display: flex;
@@ -945,7 +946,7 @@
       console.log("🔍 [DEBUG] registrarInteracao:", { docId, tipoAcao });
       try {
         const vid = currentUserUID || getVisitorId();
-        const ref = doc(db, "anigeeknews.web.app", "games_filmes_series_animes_noticias", "need_for_speed_most_wanted_psp", vid);
+        const ref = doc(db, "anigeeknews.web.app", "games_filmes_series_animes_noticias", "need_for_speed_most_wanted_psp", docId, "visitantes", vid);
         await setDoc(ref, {
           lastActive: serverTimestamp(),
           actions: arrayUnion({ type: tipoAcao, ts: Date.now() })
@@ -1566,7 +1567,7 @@
 
     function carregarTudoRealTime() {
       console.log("🔍 [DEBUG] carregarTudoRealTime: Iniciando snapshot de notícias");
-      console.log("🔍 [DEBUG] Firestore path: anigeeknews.web.app / animes_filmes_series_games_noticias / horimiya");
+      console.log("🔍 [DEBUG] Firestore path: anigeeknews.web.app", "games_filmes_series_animes_noticias", "need_for_speed_most_wanted_psp");
       onSnapshot(collection(db, "anigeeknews.web.app", "games_filmes_series_animes_noticias", "need_for_speed_most_wanted_psp"), (snapshot) => {
         console.log("🔍 [DEBUG] onSnapshot notícias: docs count =", snapshot?.size);
         if (!snapshot) {

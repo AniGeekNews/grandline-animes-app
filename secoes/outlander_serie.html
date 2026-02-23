@@ -859,7 +859,7 @@
           },
           last_updated: serverTimestamp()
         });
-        const noticiaRef = doc(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya", animeId);
+        const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie", animeId);
         batch.update(noticiaRef, {
           curtidas: increment(1),
           last_updated: serverTimestamp()
@@ -914,7 +914,7 @@
           },
           last_updated: serverTimestamp()
         });
-        const noticiaRef = doc(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya", animeId);
+        const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie", animeId);
         batch.update(noticiaRef, {
           visualizacoes: increment(1),
           lastViewed: serverTimestamp()
@@ -946,7 +946,7 @@
       console.log("🔍 [DEBUG] registrarInteracao:", { docId, tipoAcao });
       try {
         const vid = currentUserUID || getVisitorId();
-        const ref = doc(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya", docId, "visitantes", vid);
+        const ref = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie", docId, "visitantes", vid);
         await setDoc(ref, {
           lastActive: serverTimestamp(),
           actions: arrayUnion({ type: tipoAcao, ts: Date.now() })
@@ -990,7 +990,7 @@
           return;
         }
         try {
-          const noticiaRef = doc(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya", idNoticia);
+          const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie", idNoticia);
           await updateDoc(noticiaRef, {
             visualizacoes: increment(1),
             lastViewed: serverTimestamp()
@@ -1169,7 +1169,7 @@
         const likedKey = `anigeek_liked_${idNoticia}`;
         if (localStorage.getItem(likedKey) === 'true') return;
         try {
-          const noticiaRef = doc(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya", idNoticia);
+          const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie", idNoticia);
           await updateDoc(noticiaRef, { curtidas: increment(1) });
           localStorage.setItem(likedKey, 'true');
           if (event?.currentTarget) {
@@ -1568,7 +1568,7 @@
     function carregarTudoRealTime() {
       console.log("🔍 [DEBUG] carregarTudoRealTime: Iniciando snapshot de notícias");
       console.log("🔍 [DEBUG] Firestore path: anigeeknews.web.app / animes_filmes_series_games_noticias / horimiya");
-      onSnapshot(collection(db, "anigeeknews.web.app", "animes_filmes_series_games_noticias", "horimiya"), (snapshot) => {
+      onSnapshot(collection(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "outlander_serie"), (snapshot) => {
         console.log("🔍 [DEBUG] onSnapshot notícias: docs count =", snapshot?.size);
         if (!snapshot) {
           console.warn("⚠️ [WARN] Snapshot é null/undefined");
