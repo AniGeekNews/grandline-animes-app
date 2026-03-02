@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AniGeek Robot v15.5 - Professional Edition</title>
+    <link rel="stylesheet" href="estilo.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <div class="modal-overlay" id="overlay"></div>
+    <div id="viewerModal">
+        <h3>📄 Código <span id="fileNameModal" style="color:var(--orange);"></span> 
+            <button id="btnCopiarModal" style="background:var(--orange); color:white; font-size:11px; float:right;">Copiar</button>
+        </h3>
+        <textarea id="modalTextarea" readonly></textarea>
+        <button id="btnFecharModal" style="background:var(--danger); color:white; width:100%; margin-top:10px">Fechar</button>
+    </div>
+    <div class="main-layout">
+        <div class="content">
+            <h2>🤖 AniGeek Robot v15.5</h2>
+            <div class="card">
+                <h3>1. Injeção de Dados (Cloud Templates)</h3>
+                <textarea id="inputRecomendacao" placeholder="JS de Recomendação..."></textarea>
+                <textarea id="inputCSS" style="margin-top:10px" placeholder="CSS Modelo..."></textarea>
+                <textarea id="templateHtml" style="margin-top:10px" placeholder="HTML Template..."></textarea>
+                <button id="btnSalvarTemplates" class="btn-admin">☁️ Salvar Alterações nos Templates</button>
+            </div>
+            <div class="card">
+                <h3>2. Execução em Lote</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <select id="targetProject"><option value="todos">Todos os Projetos</option></select>
+                    <input type="text" id="fileName" placeholder="IDs (vírgula)">
+                    <select id="tipoColecao">
+                        <option value="filme">Filme</option>
+                        <option value="serie">Série</option>
+                        <option value="game">Game</option>
+                        <option value="anime">Anime</option>
+                        <option value="noticia">Notícia</option>
+                    </select>
+                </div>
+                <button id="btnGerarArquivos" class="btn-gen">⚙️ GERAR ARQUIVOS LOCAIS</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:10px;">
+                    <button id="btnBaixarZip" class="btn-zip">📦 BAIXAR .ZIP</button>
+                    <button id="btnSincronizarFirebase" class="btn-db">🚀 SYNC FIRESTORE</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>3. Logs & Terminal</h3>
+                <button id="btnCopiarTerminal" class="btnCopiar">📋 Copiar Terminal</button>
+                <div id="consoleLog" class="log">Iniciando núcleo v15.5...</div>
+                <div class="terminal-input">
+                    <input type="text" id="termCmd" placeholder="Comando (ex: comparar-versoes v14 v15)">
+                    <button id="btnExecutarTerminal" class="btn-term">EXECUTAR</button>
+                </div>
+            </div>
+            <div class="card" style="border-top: 2px solid var(--accent)">
+                <h3>5. Registro Manual de Versão</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="regVersao" placeholder="Nome da Versão (ex: v16)">
+                    <input type="text" id="regAutor" placeholder="Autor (Opcional)">
+                </div>
+                <textarea id="regChangelog" style="height: 60px;" placeholder="O que mudou nesta versão?"></textarea>
+                <button id="btnRegistrarVersao" class="btn-reg">💾 Registrar Versão Atual (File:// Compatible)</button>
+            </div>
+            <div class="card admin-section" style="border-top: 1px solid var(--admin)">
+                <h3>⚙️ Configuração de Editores</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <input type="text" id="admId" placeholder="ID">
+                    <input type="text" id="admDom" placeholder="Domínio">
+                    <input type="text" id="admPath" placeholder="Caminho Base">
+                </div>
+                <button id="btnAdicionarEditor" class="btn-admin">➕ Salvar Editor</button>
+                <div id="listaEditoresAdm" style="margin-top:10px; font-size:11px; color:#94a3b8;"></div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="card">
+                <h3>📂 Arquivos</h3>
+                <div id="fileExplorer" class="explorer"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="scripts/principal.js"></script>
+</body>
+</html>

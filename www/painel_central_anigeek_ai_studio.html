@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AniGeek Studio Enterprise — v14.5 Firebase Structure Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.343.0/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+--primary-50: #f0f5ff; --primary-100: #e0e7ff; --primary-500: #B42431;
+--primary-600: #71AD88; --primary-700: #3730a3; --primary-800: #312e81;
+--neutral-50: #fafafa; --neutral-100: #f5f5f5; --neutral-200: #e5e5e5;
+--neutral-300: #d4d4d4; --neutral-400: #a3a3a3; --neutral-500: #737373;
+--neutral-600: #525252; --neutral-700: #404040; --neutral-800: #262626;
+--neutral-900: #171717; --surface-50: #fcfcfd; --surface-100: #f8f9fc;
+--surface-200: #f1f3f8; --success-500: #10b981; --warning-500: #71AD88;
+--danger-500: #ef4444; --analytics-500: #8b5cf6; --ops-500: #71AD88;
+--accent-500: #0ea5e9;
+--shadow-sm: 0 0.9px 1.8px rgba(0, 0, 0, 0.05);
+--shadow-md: 0 3.6px 5.4px -0.9px rgba(0, 0, 0, 0.1), 0 1.8px 3.6px -0.9px rgba(0, 0, 0, 0.06);
+--shadow-lg: 0 9px 13.5px -2.7px rgba(0, 0, 0, 0.1), 0 3.6px 5.4px -1.8px rgba(0, 0, 0, 0.05);
+--shadow-xl: 0 18px 22.5px -4.5px rgba(0, 0, 0, 0.1), 0 9px 9px -4.5px rgba(0, 0, 0, 0.04);
+--border-radius-sm: 3.6px; --border-radius-md: 7.2px;
+--border-radius-lg: 10.8px; --border-radius-xl: 14.4px;
+--transition-fast: all 0.135s cubic-bezier(0.4, 0, 0.2, 1);
+--transition-normal: all 0.225s cubic-bezier(0.4, 0, 0.2, 1);
+--transition-slow: all 0.315s cubic-bezier(0.4, 0, 0.2, 1);
+--primary: var(--primary-500); --primary-dark: var(--primary-700);
+--secondary: var(--neutral-900); --accent: var(--accent-500);
+--success: var(--success-500); --danger: var(--danger-500);
+--warning: var(--warning-500); --analytics: var(--analytics-500);
+--ops: var(--ops-500); --bg: var(--surface-100); --surface: var(--neutral-50);
+--border: var(--neutral-300); --text-main: var(--neutral-900);
+--text-muted: var(--neutral-600);
+--elevation-1: var(--shadow-sm); --elevation-2: var(--shadow-md);
+--elevation-3: var(--shadow-lg); --elevation-4: var(--shadow-xl);
+}
+[data-theme="dark"] {
+--bg: #0f1115; --surface: #14171d; --surface-raised: #1a1e24;
+--border: #252a33; --border-strong: #333944;
+--text-main: #f0f2f8; --text-secondary: #cbd0dc;
+--text-muted: #9ca3af; --text-placeholder: #6b7280;
+--neutral-50: #1a1d24; --neutral-100: #1e222b; --neutral-200: #252a33;
+--neutral-300: #374151; --neutral-400: #4b5563; --neutral-500: #6b7280;
+--neutral-600: #9ca3af; --neutral-700: #d1d5db; --neutral-800: #e5e7eb;
+--neutral-900: #f9fafb; --surface-100: #1f2937; --surface-200: #374151;
+--primary-50: #1a1b26; --primary-100: #222436; --primary-500: #ef4444;
+--primary-600: #dc2626; --primary-700: #71AD88; --primary-800: #059669;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+body { background: var(--bg); color: var(--text-main); font-size: 10.8px; line-height: 1.4; overflow-x: hidden; transition: var(--transition-normal); }
+.header-enterprise { background: var(--secondary); color: white; padding: 12.6px 18px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 3.6px 10.8px rgba(0, 0, 0, 0.15); border-bottom: 0.9px solid rgba(255, 255, 255, 0.1); transition: var(--transition-normal); }
+.header-enterprise h2 { margin: 0; font-size: 14.4px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.025em; display: flex; align-items: center; gap: 9px; }
+.header-enterprise span { font-size: 8.1px; background: var(--primary); padding: 3.6px 7.2px; border-radius: 3.6px; letter-spacing: 0.45px; }
+.header-actions { display: flex; align-items: center; gap: 9px; }
+.theme-toggle-btn { background: var(--primary); border: none; width: 32.4px; height: 32.4px; border-radius: 7.2px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition-fast); box-shadow: var(--elevation-2); }
+.theme-toggle-btn:hover { background: var(--primary-600); transform: rotate(30deg); }
+.theme-toggle-btn svg { width: 9px; height: 9px; transition: var(--transition-fast); }
+.generic-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(7.2px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 18px; animation: fadeIn 0.18s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-content { background: var(--surface); width: 100%; max-width: 468px; border-radius: var(--border-radius-lg); overflow: hidden; box-shadow: var(--elevation-4); max-height: 85vh; display: flex; flex-direction: column; border: 0.9px solid var(--border); }
+.modal-content.large { max-width: 90%; max-height: 90vh; }
+.modal-header { padding: 16.2px 18px; border-bottom: 0.9px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-100); font-weight: 700; font-size: 12.6px; }
+.modal-header button { background: var(--neutral-200); border: none; width: 28.8px; height: 28.8px; border-radius: 7.2px; font-weight: 700; cursor: pointer; transition: var(--transition-fast); }
+.modal-header button:hover { background: var(--neutral-300); }
+.modal-body { overflow-y: auto; flex: 1; padding: 14.4px; }
+.painel-container { max-width: 1035px; margin: 0 auto; padding: 14.4px; padding-bottom: 162px; }
+.smart-search-area { background: var(--surface); border: 1.8px solid var(--primary); border-radius: var(--border-radius-lg); padding: 16.2px; margin-bottom: 14.4px; box-shadow: var(--elevation-2); transition: var(--transition-normal); }
+.smart-search-area:hover { box-shadow: var(--elevation-3); border-color: var(--primary-600); }
+.search-row { display: flex; gap: 9px; }
+.search-row input { flex: 1; padding: 10.8px 14.4px; border: 1.35px solid var(--border); border-radius: var(--border-radius-md); font-size: 12.6px; background: var(--surface); color: var(--text-main); transition: var(--transition-fast); }
+.search-row input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2.7px rgba(79, 70, 229, 0.1); }
+.btn-search { background: var(--primary); color: white; border: none; padding: 0 21.6px; border-radius: var(--border-radius-md); cursor: pointer; font-weight: 800; font-size: 11.7px; transition: var(--transition-fast); display: flex; align-items: center; justify-content: center; min-width: 90px; }
+.btn-search:hover { background: var(--primary-600); transform: translateY(-0.9px); }
+.btn-search:active { transform: translateY(0); }
+.results-dropdown { background: var(--surface); border: 0.9px solid var(--border); max-height: 252px; overflow-y: auto; margin-top: 9px; display: none; border-radius: var(--border-radius-md); box-shadow: var(--elevation-2); }
+.result-item { padding: 12.6px; border-bottom: 0.9px solid var(--neutral-200); cursor: pointer; transition: var(--transition-fast); font-size: 11.7px; }
+.result-item:hover { background: var(--primary-50); border-left: 2.7px solid var(--primary); padding-left: 9.9px; }
+.result-item:last-child { border-bottom: none; }
+.secao-card { background: var(--surface); border: 0.9px solid var(--border); border-radius: var(--border-radius-lg); padding: 16.2px; margin-bottom: 12.6px; position: relative; box-shadow: var(--elevation-1); transition: var(--transition-normal); }
+.secao-card:hover { box-shadow: var(--elevation-2); transform: translateY(-0.9px); }
+.secao-card h3 { margin: 0 0 12.6px 0; font-size: 9.9px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 9px; border-bottom: 0.9px solid var(--neutral-200); padding-bottom: 9px; font-weight: 800; letter-spacing: 0.05em; }
+.toggle-btn { position: absolute; right: 14.4px; top: 12.6px; background: var(--surface-100); border: 0.9px solid var(--border); padding: 5.4px 10.8px; border-radius: var(--border-radius-sm); font-size: 8.1px; font-weight: 800; color: var(--primary); cursor: pointer; transition: var(--transition-fast); }
+.toggle-btn:hover { background: var(--primary-50); border-color: var(--primary-300); }
+.grid-compact { display: grid; grid-template-columns: 1fr 1fr; gap: 10.8px; }
+.campo-grupo { margin-bottom: 10.8px; position: relative; }
+.campo-grupo label { font-weight: 700; font-size: 8.1px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5.4px; display: block; letter-spacing: 0.05em; }
+input, textarea, select { width: 100%; padding: 9px 12.6px; border: 0.9px solid var(--border); border-radius: var(--border-radius-md); font-size: 11.7px; outline: none; background: var(--surface); color: var(--text-main); transition: var(--transition-fast); font-family: 'IBM Plex Sans', sans-serif; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2.7px rgba(79, 70, 229, 0.1); }
+input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
+input.error, textarea.error { border-color: var(--danger); box-shadow: 0 0 0 2.7px rgba(239, 68, 68, 0.1); }
+.error-message { font-size: 7.2px; color: var(--danger); margin-top: 3.6px; display: none; }
+.error-message.show { display: block; }
+.ai-chip { flex: 1; padding: 9px; background: var(--surface); border: 0.9px solid var(--border); border-radius: var(--border-radius-md); font-size: 9px; text-align: center; cursor: pointer; font-weight: 800; transition: var(--transition-fast); }
+.ai-chip:hover { background: var(--primary-50); border-color: var(--primary-300); }
+.ai-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+.btn-inspect { position: absolute; right: 9px; top: 23.4px; background: var(--surface-100); border: 0.9px solid var(--border); padding: 5.4px 9px; border-radius: var(--border-radius-sm); color: var(--primary); font-size: 9.9px; cursor: pointer; transition: var(--transition-fast); }
+.btn-inspect:hover { background: var(--primary-50); border-color: var(--primary-300); }
+.inspect-viewer { margin-top: 10.8px; background: var(--neutral-900); border-radius: var(--border-radius-md); overflow: hidden; display: none; width: 100%; aspect-ratio: 16/9; border: 1.8px solid var(--neutral-800); }
+.inspect-viewer iframe, .inspect-viewer img { width: 100%; height: 100%; border: none; object-fit: cover; }
+.btn-add { padding: 10.8px; font-size: 9.9px; font-weight: 800; border: 1.8px dashed var(--border); border-radius: var(--border-radius-md); background: var(--surface-100); color: var(--text-muted); width: 100%; cursor: pointer; margin-bottom: 9px; transition: var(--transition-fast); }
+.btn-add:hover { background: var(--primary-50); border-color: var(--primary-300); color: var(--primary-700); }
+.item-flex { display: flex; gap: 9px; margin-bottom: 9px; align-items: center; }
+.btn-remover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 0.9px solid rgba(239, 68, 68, 0.2); padding: 7.2px 10.8px; border-radius: var(--border-radius-md); font-weight: 800; cursor: pointer; transition: var(--transition-fast); min-width: 36px; }
+.btn-remover:hover { background: rgba(239, 68, 68, 0.15); }
+.drop-zone { border: 2.7px dashed var(--border); border-radius: var(--border-radius-md); padding: 18px; text-align: center; cursor: pointer; transition: var(--transition-fast); background: var(--surface-100); margin-bottom: 10.8px; }
+.drop-zone:hover, .drop-zone.dragover { border-color: var(--primary); background: var(--primary-50); }
+.drop-zone i { display: block; margin-bottom: 7.2px; color: var(--primary); }
+.drop-zone-text { font-size: 9px; color: var(--text-muted); }
+.acoes-wrapper { position: relative; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 0.9px solid var(--border); padding: 12.6px 14.4px 21.6px 14.4px; z-index: 1001; box-shadow: 0 -3.6px 18px rgba(0, 0, 0, 0.08); transition: var(--transition-normal); }
+.acoes { display: flex; gap: 9px; }
+.btn-main { padding: 12.6px; border: none; border-radius: var(--border-radius-md); font-weight: 800; font-size: 9.9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7.2px; transition: var(--transition-fast); letter-spacing: 0.025em; min-width: 43.2px; }
+.btn-save { background: var(--primary); color: white; flex: 2; }
+.btn-save:hover { background: var(--primary-600); transform: translateY(-1.8px); box-shadow: var(--elevation-2); }
+.btn-ops { background: var(--ops); color: white; flex: 1; }
+.btn-ops:hover { background: #db2777; transform: translateY(-1.8px); }
+.btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); flex: 0.5; border: 0.9px solid rgba(239, 68, 68, 0.2); }
+.btn-delete:hover { background: rgba(239, 68, 68, 0.15); transform: scale(1.1); }
+.btn-sec { background: var(--secondary); color: white; flex: 1; }
+.btn-sec:hover { background: #0c1424; transform: translateY(-1.8px); }
+.status { position: fixed; top: 63px; left: 50%; transform: translateX(-50%); padding: 10.8px 25.2px; border-radius: 27px; font-size: 10.8px; font-weight: 800; z-index: 3000; display: none; color: white; box-shadow: var(--elevation-3); animation: slideDown 0.27s ease; }
+@keyframes slideDown { from { opacity: 0; transform: translate(-50%, -18px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.char-counter { font-size: 8.1px; color: var(--text-muted); text-align: right; margin-top: 3.6px; font-weight: 600; }
+.char-counter.warning { color: var(--danger); font-weight: 700; }
+.collection-folder { background: var(--surface-100); border: 0.9px solid var(--border); border-radius: var(--border-radius-md); padding: 10.8px; margin-bottom: 10.8px; transition: var(--transition-fast); }
+.collection-folder:hover { border-color: var(--primary-300); background: var(--primary-50); }
+.folder-header { font-weight: 800; font-size: 9.9px; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 9px; padding: 7.2px 0; transition: var(--transition-fast); }
+.folder-header:hover { color: var(--primary-700); }
+.folder-content { margin-top: 9px; display: none; }
+.folder-content.active { display: block; }
+.folder-item { padding: 7.2px 10.8px; margin-bottom: 5.4px; background: var(--surface); border: 0.9px solid var(--border); border-radius: var(--border-radius-sm); cursor: pointer; font-size: 9.9px; transition: var(--transition-fast); display: flex; align-items: center; gap: 7.2px; }
+.folder-item:hover { background: var(--primary-50); border-color: var(--primary-300); color: var(--primary-700); }
+.folder-item.locked::before { content: "🔒"; margin-right: 5.4px; font-size: 10.8px; }
+#ai-loader-inline { display: none; align-items: center; gap: 9px; color: var(--primary); font-weight: 800; font-size: 9px; text-transform: uppercase; margin-bottom: 7.2px; padding: 7.2px 18px; background: rgba(79, 70, 229, 0.08); border-radius: 18px; letter-spacing: 0.05em; }
+.dot-pulse { width: 7.2px; height: 7.2px; background: var(--primary); border-radius: 50%; animation: pulse-glow 1.08s infinite ease-in-out; }
+@keyframes pulse-glow { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+.migration-option { background: var(--surface-100); border: 0.9px solid var(--border); padding: 10.8px; border-radius: var(--border-radius-md); margin-bottom: 10.8px; }
+.migration-option label { display: block; font-weight: 800; font-size: 9px; color: var(--text-muted); margin-bottom: 5.4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.ops-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10.8px; margin-top: 14.4px; }
+.form-corpo { display: flex; flex-direction: column; gap: 12.6px; }
+.auth-modal { background: var(--surface); border-radius: var(--border-radius-lg); padding: 21.6px; text-align: center; animation: slideUp 0.27s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.auth-modal h3 { margin-bottom: 14.4px; font-size: 14.4px; font-weight: 800; color: var(--primary); }
+.auth-input { width: 100%; padding: 10.8px; border: 1.8px solid var(--border); border-radius: var(--border-radius-md); font-size: 11.7px; margin-bottom: 14.4px; background: var(--surface); color: var(--text-main); transition: var(--transition-fast); }
+.auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2.7px rgba(79, 70, 229, 0.1); }
+.auth-btn { width: 100%; padding: 10.8px; border: none; border-radius: var(--border-radius-md); font-weight: 800; font-size: 10.8px; cursor: pointer; margin-top: 7.2px; transition: var(--transition-fast); }
+.auth-btn.primary { background: var(--primary); color: white; }
+.auth-btn.primary:hover { background: var(--primary-600); transform: translateY(-1.8px); box-shadow: var(--elevation-2); }
+.auth-btn.secondary { background: var(--neutral-200); color: var(--text-main); }
+.auth-btn.secondary:hover { background: var(--neutral-300); }
+.checkbox-container { display: flex; align-items: center; gap: 7.2px; margin-top: 10.8px; cursor: pointer; }
+.checkbox-custom { width: 16.2px; height: 16.2px; border: 1.8px solid var(--border); border-radius: 3.6px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); }
+.checkbox-custom.checked { background: var(--primary); border-color: var(--primary); }
+.checkbox-custom.checked::after { content: "✓"; color: white; font-weight: 800; font-size: 10.8px; }
+.tabs { display: flex; gap: 5.4px; margin-bottom: 14.4px; border-bottom: 0.9px solid var(--border); padding-bottom: 9px; }
+.tab-btn { padding: 7.2px 14.4px; background: var(--surface); border: 0.9px solid var(--border); border-radius: var(--border-radius-sm); font-size: 9px; font-weight: 700; cursor: pointer; transition: var(--transition-fast); }
+.tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10.8px; margin-bottom: 14.4px; }
+.analytics-card { background: var(--surface-100); border: 0.9px solid var(--border); border-radius: var(--border-radius-md); padding: 10.8px; text-align: center; }
+.analytics-card .value { font-size: 16.2px; font-weight: 800; color: var(--primary); }
+.analytics-card .label { font-size: 7.2px; color: var(--text-muted); text-transform: uppercase; margin-top: 3.6px; }
+.chart-container { background: var(--surface-100); border: 0.9px solid var(--border); border-radius: var(--border-radius-md); padding: 10.8px; margin-bottom: 10.8px; }
+.chart-container canvas { max-height: 200px; }
+.social-share { display: flex; gap: 7.2px; margin-top: 10.8px; }
+.social-btn { flex: 1; padding: 9px; border: none; border-radius: var(--border-radius-md); font-size: 9px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5.4px; transition: var(--transition-fast); }
+.social-btn.facebook { background: #1877f2; color: white; }
+.social-btn.twitter { background: #1da1f2; color: white; }
+.social-btn.whatsapp { background: #25d366; color: white; }
+.social-btn.copy { background: var(--surface-100); color: var(--text-main); border: 0.9px solid var(--border); }
+.social-btn:hover { transform: translateY(-1.8px); box-shadow: var(--elevation-2); }
+/* NOVO: Botão Aplicar a Todos */
+.btn-aplicar-todos {
+background: var(--analytics);
+color: white;
+border: none;
+padding: 5.4px 10.8px;
+border-radius: var(--border-radius-sm);
+font-size: 7.2px;
+font-weight: 800;
+cursor: pointer;
+transition: var(--transition-fast);
+margin-left: 9px;
+text-transform: uppercase;
+}
+.btn-aplicar-todos:hover {
+background: #7c3aed;
+transform: translateY(-0.9px);
+}
+/* NOVO: Container de item completo para remover */
+.item-relacionado-box, .item-produto-box {
+background: var(--surface-100);
+padding: 10px;
+border-radius: 8px;
+margin-bottom: 10px;
+border: 1px solid var(--border);
+position: relative;
+}
+.item-relacionado-box .btn-remover-completo,
+.item-produto-box .btn-remover-completo {
+position: absolute;
+right: 9px;
+top: 9px;
+background: rgba(239, 68, 68, 0.15);
+color: var(--danger);
+border: 0.9px solid rgba(239, 68, 68, 0.3);
+padding: 5.4px 9px;
+border-radius: var(--border-radius-sm);
+font-weight: 800;
+cursor: pointer;
+transition: var(--transition-fast);
+font-size: 9px;
+}
+.item-relacionado-box .btn-remover-completo:hover,
+.item-produto-box .btn-remover-completo:hover {
+background: rgba(239, 68, 68, 0.25);
+}
+@media (max-width: 768px) {
+.grid-compact { grid-template-columns: 1fr; }
+.header-enterprise { padding: 10.8px 14.4px; flex-direction: column; gap: 9px; }
+.header-enterprise h2 { font-size: 12.6px; }
+.header-actions { width: 100%; justify-content: space-between; }
+.search-row { flex-direction: column; }
+.acoes { flex-wrap: wrap; }
+.btn-main { flex: 1; min-width: auto; }
+.btn-save { flex: 1 1 100%; }
+.painel-container { padding: 10.8px; }
+.modal-content.large { max-width: 100%; max-height: 100%; }
+}
+</style>
+</head>
+<body>
+<div id="msgStatus" class="status"></div>
+<!-- Modal de Pré-visualização -->
+<div id="previewModal" class="generic-modal">
+<div class="modal-content large">
+<div class="modal-header">
+<h3><i data-lucide="eye" style="width:18px;height:18px"></i> PRÉ-VISUALIZAÇÃO</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body" style="overflow-y: auto; padding: 0; background: #fff;">
+<iframe id="previewFrame" style="width: 100%; height: 100%; border: none; min-height: 600px;"></iframe>
+</div>
+</div>
+</div>
+<!-- Modal de Analytics -->
+<div id="analyticsModal" class="generic-modal">
+<div class="modal-content" style="max-width: 600px;">
+<div class="modal-header">
+<h3><i data-lucide="bar-chart-2" style="width:18px;height:18px"></i> ANALYTICS</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div class="analytics-grid">
+<div class="analytics-card"><div class="value" id="statViews">0</div><div class="label">Visualizações</div></div>
+<div class="analytics-card"><div class="value" id="statLikes">0</div><div class="label">Curtidas</div></div>
+<div class="analytics-card"><div class="value" id="statShares">0</div><div class="label">Compartilhamentos</div></div>
+<div class="analytics-card"><div class="value" id="statTime">0s</div><div class="label">Tempo Médio</div></div>
+</div>
+<div class="chart-container"><canvas id="engagementChart"></canvas></div>
+<div class="chart-container"><canvas id="trafficChart"></canvas></div>
+<div class="chart-container"><canvas id="retentionChart"></canvas></div>
+</div>
+</div>
+</div>
+<!-- Modal de Comentários -->
+<div id="commentsModal" class="generic-modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i data-lucide="message-square" style="width:18px;height:18px"></i> COMENTÁRIOS</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div class="comments-list" id="commentsList"><div style="text-align:center; color:var(--text-muted); padding:20px;">Carregando comentários...</div></div>
+<div style="display:flex; gap:9px; margin-top:10px;">
+<input type="text" id="newComment" placeholder="Responder como administrador..." style="flex:1;">
+<button class="btn-main" style="background:var(--primary); color:white; padding:9px 14px;" onclick="postAdminComment()">Enviar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal de Versões -->
+<div id="versionsModal" class="generic-modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i data-lucide="history" style="width:18px;height:18px"></i> HISTÓRICO DE VERSÕES</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div class="versions-list" id="versionsList"><div style="text-align:center; color:var(--text-muted); padding:20px;">Carregando histórico...</div></div>
+</div>
+</div>
+</div>
+<!-- Modal de Compartilhamento Social -->
+<div id="shareModal" class="generic-modal">
+<div class="modal-content" style="max-width: 400px;">
+<div class="modal-header">
+<h3><i data-lucide="share-2" style="width:18px;height:18px"></i> COMPARTILHAR</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body" style="text-align:center;">
+<p style="margin-bottom:14px; font-size:11px; color:var(--text-muted);">Compartilhe este conteúdo nas redes sociais:</p>
+<div class="social-share">
+<button class="social-btn facebook" onclick="shareSocial('facebook')"><i data-lucide="facebook"></i> Facebook</button>
+<button class="social-btn twitter" onclick="shareSocial('twitter')"><i data-lucide="twitter"></i> Twitter</button>
+</div>
+<div class="social-share" style="margin-top:9px;">
+<button class="social-btn whatsapp" onclick="shareSocial('whatsapp')"><i data-lucide="message-circle"></i> WhatsApp</button>
+<button class="social-btn copy" onclick="copyShareLink()"><i data-lucide="copy"></i> Copiar Link</button>
+</div>
+<div style="margin-top:14px; padding-top:14px; border-top:0.9px solid var(--border);">
+<label style="font-size:9px; color:var(--text-muted); display:block; margin-bottom:7px;">Agendar publicação:</label>
+<input type="datetime-local" id="schedulePublish" style="margin-bottom:9px;">
+<button class="btn-main" style="width:100%; background:var(--success); color:white;" onclick="schedulePost()">Agendar Postagem</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal de Banco de Dados -->
+<div id="dbModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i data-lucide="cloud" style="width:18px;height:18px"></i> NUVEM ANIGEEK</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div style="padding:14px; background:var(--surface-100); border-bottom:1px solid var(--border)">
+<input type="text" id="dbSearch" placeholder="Pesquisar..." oninput="filtrarDB()" style="width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--border-radius-md); font-size:13px">
+<select id="animeSubcollectionSelect" style="width:100%; padding:10px; margin-top:9px; border:1px solid var(--border); border-radius:var(--border-radius-md); background:var(--surface); font-size:11px;" onchange="carregarListaCloud()">
+<option value="">-- Selecione a Coleção de Anime --</option>
+</select>
+</div>
+<div id="dbList" class="modal-body"></div>
+</div>
+</div>
+<!-- Modal de Migração -->
+<div id="migrationModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content" style="border: 2px solid var(--ops);">
+<div class="modal-header">
+<h3 style="color: var(--ops);"><i data-lucide="truck" style="width:18px;height:18px"></i> OPERAÇÕES DE DADOS (PRO)</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div style="background: rgba(239, 68, 68, 0.08); padding: 12px; border-radius: var(--border-radius-md); color: var(--danger); font-size: 11px; margin-bottom: 16px; border: 1px solid rgba(239, 68, 68, 0.2);">
+<i data-lucide="alert-triangle" style="width:16px;height:16px; vertical-align:middle"></i> <b>CUIDADO:</b> Você está prestes a modificar o banco de dados.
+</div>
+<div class="migration-option" style="background: var(--surface); border: 2px solid var(--warning); padding: 16px; margin-bottom: 16px;">
+<label style="color: var(--warning); font-weight: 800; margin-bottom: 10px; display: block;">📄 DOCUMENTO ATUAL (ORIGEM)</label>
+<div style="background: var(--surface-100); padding: 12px; border-radius: var(--border-radius-md); font-family: 'IBM Plex Mono', monospace; font-size: 11px; word-break: break-all; color: var(--text-main);">
+<span style="color: var(--ops); font-weight: 800;">Coleção:</span> <span id="migracaoOrigemColecao">-</span><br>
+<span style="color: var(--ops); font-weight: 800;">Subcoleção:</span> <span id="migracaoOrigemSubcolecao">-</span><br>
+<span style="color: var(--ops); font-weight: 800;">Documento ID:</span> <span id="migracaoOrigemDoc">-</span>
+</div>
+</div>
+<div class="migration-option">
+<label>COLEÇÃO DE DESTINO (DOMÍNIO)</label>
+<select id="migracaoDestinoColecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>SUBCOLEÇÃO DE DESTINO (ANIME)</label>
+<select id="migracaoDestinoSubcolecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>ID DO DOCUMENTO (DESTINO)</label>
+<input type="text" id="migracaoDestinoID" placeholder="Mantenha igual ou digite novo ID">
+</div>
+<div class="migration-option" id="multiDestinoContainer" style="display: none;">
+<label style="color: var(--analytics);">🎯 MÚLTIPLAS COLEÇÕES</label>
+<div id="multiDestinoCheckboxes" style="max-height: 200px; overflow-y: auto;"></div>
+<div class="checkbox-container" onclick="toggleSelectAll()">
+<div class="checkbox-custom" id="selectAllCheckbox"></div>
+<span style="font-size: 11px;">Selecionar todas</span>
+</div>
+</div>
+<div class="ops-btn-group" id="migrationFooter">
+<button class="btn-main" style="background: var(--ops); color: white;" onclick="executarMigracao('copiar')">COPIAR</button>
+<button class="btn-main" style="background: var(--secondary); color: white;" onclick="executarMigracao('mover')">MOVER</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal de Migração em Massa -->
+<div id="massMigrationModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content" style="border: 2px solid var(--analytics);">
+<div class="modal-header">
+<h3 style="color: var(--analytics);"><i data-lucide="layers" style="width:18px;height:18px"></i> MIGRAÇÃO EM MASSA</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div style="background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: var(--border-radius-md); color: var(--analytics); font-size: 11px; margin-bottom: 16px; border: 1px solid rgba(139, 92, 246, 0.2);">
+<i data-lucide="alert-triangle" style="width:16px;height:16px; vertical-align:middle"></i> <b>ATENÇÃO:</b> Esta operação afeta vários documentos.
+</div>
+<div class="migration-option">
+<label>COLEÇÃO DE ORIGEM</label>
+<select id="massOrigemColecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>SUBCOLEÇÃO DE ORIGEM</label>
+<select id="massOrigemSubcolecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>COLEÇÃO DE DESTINO</label>
+<select id="massDestinoColecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>SUBCOLEÇÃO DE DESTINO</label>
+<select id="massDestinoSubcolecao" style="font-weight: 800; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); width:100%"></select>
+</div>
+<div class="migration-option">
+<label>PREFIXO PARA NOVOS IDs</label>
+<input type="text" id="massPrefixoID" placeholder="Opcional: prefixo para novos IDs">
+</div>
+<div class="ops-btn-group">
+<button class="btn-main" style="background: var(--analytics); color: white;" onclick="executarMigracaoMassa()">MIGRAR EM MASSA</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal de Reports -->
+<div id="reportsModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content" style="border: 2px solid var(--danger);">
+<div class="modal-header">
+<h3 style="color: var(--danger);"><i data-lucide="flag" style="width:18px;height:18px"></i> REPORTS GLOBAIS</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div style="background: rgba(239, 68, 68, 0.1); padding: 12px; border-radius: var(--border-radius-md); color: var(--danger); font-size: 11px; margin-bottom: 16px; border: 1px solid rgba(239, 68, 68, 0.2);">
+<i data-lucide="alert-triangle" style="width:16px;height:16px; vertical-align:middle"></i> <b>ATENÇÃO:</b> Todos os reports de todas as coleções.
+</div>
+<div style="display:flex; gap:9px; margin-bottom:14px;">
+<select id="reportFilter" style="flex:1; padding:10px; border-radius:var(--border-radius-md); border:1px solid var(--border); background:var(--surface);">
+<option value="todos">Todos os tipos</option>
+<option value="conteudo_incorreto">Conteúdo incorreto</option>
+<option value="conteudo_faltante">Conteúdo faltando</option>
+<option value="legenda_faltando">Legenda ausente</option>
+<option value="inconsistencia_descricao">Inconsistência na descrição</option>
+<option value="titulo_incorreto">Título incorreto</option>
+</select>
+<button class="btn-main" style="background:var(--danger); color:white; padding:10px 14px;" onclick="filtrarReports()">Filtrar</button>
+</div>
+<div id="reportsList" style="max-height:400px; overflow-y:auto;"></div>
+</div>
+</div>
+</div>
+<!-- Modal de Seleção de Coleção -->
+<div id="collectionModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i data-lucide="folder-tree" style="width:18px;height:18px"></i> SELECIONAR COLEÇÃO</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body" id="listaColecoesBtn"></div>
+</div>
+</div>
+<!-- Modal de Autenticação -->
+<div id="authModal" class="generic-modal" style="display: none;" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content" style="max-width: 400px;">
+<div class="auth-modal">
+<h3><i data-lucide="lock" style="width:20px;height:20px;"></i> AUTENTICAÇÃO</h3>
+<p style="color: var(--text-muted); font-size: 11px; margin-bottom: 16px;">Insira a senha da coleção.</p>
+<input type="password" id="authPassword" class="auth-input" placeholder="Senha..." onkeypress="if(event.key==='Enter') autenticarColecao()">
+<div style="margin: 15px 0; border-top: 1px solid var(--border); padding-top: 15px;">
+<div id="btn-ad-reward" onclick="liberarPorPropaganda()" style="cursor:pointer; background:rgba(79,70,229,0.1); border:1px dashed var(--primary); padding:10px; border-radius:8px; font-size:11px; font-weight:800; color:var(--primary); text-align:center;">
+🎁 LIBERAR GRÁTIS VIA ANÚNCIO (5s)
+</div>
+</div>
+<div style="display: flex; gap: 10px;">
+<button class="auth-btn secondary" onclick="fecharModais()">VOLTAR</button>
+<button class="auth-btn primary" onclick="autenticarColecao()">ACESSAR</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal de Confirmação Aplicar a Todos -->
+<div id="applyToAllModal" class="generic-modal" onclick="if(event.target==this) fecharModais()">
+<div class="modal-content" style="max-width: 450px; border: 2px solid var(--analytics);">
+<div class="modal-header">
+<h3 style="color: var(--analytics);"><i data-lucide="layers" style="width:18px;height:18px"></i> APLICAR A TODOS OS DOCUMENTOS</h3>
+<button onclick="fecharModais()">×</button>
+</div>
+<div class="modal-body">
+<div style="background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: var(--border-radius-md); color: var(--analytics); font-size: 11px; margin-bottom: 16px; border: 1px solid rgba(139, 92, 246, 0.2);">
+<i data-lucide="alert-triangle" style="width:16px;height:16px; vertical-align:middle"></i> <b>ATENÇÃO:</b> Esta ação irá sobrescrever o campo em TODOS os documentos da subcoleção atual.
+</div>
+<div style="margin-bottom: 14px;">
+<label style="font-size: 9px; color: var(--text-muted); display: block; margin-bottom: 5px;">CAMPO PARA APLICAR:</label>
+<div id="applyToAllFieldName" style="font-weight: 800; color: var(--primary); font-size: 11px;"></div>
+</div>
+<div style="margin-bottom: 14px;">
+<label style="font-size: 9px; color: var(--text-muted); display: block; margin-bottom: 5px;">VALOR ATUAL:</label>
+<div id="applyToAllFieldValue" style="background: var(--surface-100); padding: 9px; border-radius: var(--border-radius-sm); font-size: 10px; word-break: break-all; max-height: 100px; overflow-y: auto;"></div>
+</div>
+<div style="display: flex; gap: 9px;">
+<button class="btn-main" style="flex: 1; background: var(--neutral-200); color: var(--text-main);" onclick="fecharModais()">CANCELAR</button>
+<button class="btn-main" style="flex: 1; background: var(--analytics); color: white;" onclick="confirmarAplicarATodos()">CONFIRMAR APLICAÇÃO</button>
+</div>
+</div>
+</div>
+</div>
+<header class="header-enterprise">
+<div style="display: flex; align-items: center; gap: 10px;">
+<h2><i data-lucide="cpu" style="width:18px;height:18px"></i>PAINEL CENTRAL ANIGEEK AI STUDIO</h2>
+<span>V14.5 FIREBASE STRUCTURE</span>
+</div>
+<div class="header-actions">
+<button class="theme-toggle-btn" onclick="toggleTheme()"><i data-lucide="moon" id="themeIcon"></i></button>
+</div>
+</header>
+<div class="painel-container">
+<div class="smart-search-area">
+<div class="search-row">
+<input type="text" id="animeQuery" placeholder="1. Buscar Anime no MyAnimeList...">
+<button class="btn-search" onclick="buscarAnime()"><i data-lucide="sparkle" style="width:16px;height:16px"></i></button>
+</div>
+<div id="animeResults" class="results-dropdown"></div>
+<div id="episodeArea" style="display:none; margin-top: 16px; border-top: 1px solid var(--border); padding-top:16px;">
+<label style="font-size:9px; font-weight:800; color:var(--primary); display:block; margin-bottom:10px; text-transform:uppercase;">2. REFINAR DOCUMENTO</label>
+<select id="episodeSelect" style="margin-bottom: 14px; width:100%; padding:10px; border:1px solid var(--border); border-radius:var(--border-radius-md); background:var(--surface)">
+<option value="series_main">Página Principal</option>
+</select>
+<div class="ai-options" style="display:flex; gap:10px; margin-bottom:14px;">
+<div class="ai-chip" onclick="setAiMode('short', this)">Curto</div>
+<div class="ai-chip active" onclick="setAiMode('medium', this)">Narrativo</div>
+<div class="ai-chip" onclick="setAiMode('long', this)">Completo</div>
+</div>
+<button class="btn-search" style="background:var(--success); width: 100%;" onclick="carregarEpisodio()">
+<i data-lucide="zap" style="width:16px;height:16px"></i> EXTRAIR COM IA REAL (GEMINI)
+</button>
+</div>
+</div>
+<div class="grid-compact" style="margin-bottom: 14px;">
+<div class="secao-card" style="border-left: 4px solid var(--primary);">
+<h3><i data-lucide="folder-tree"></i> Coleção Ativa</h3>
+<div class="campo-grupo">
+<label>Domínio / Pasta</label>
+<input type="text" id="colecaoDisplay" readonly value="Nenhuma coleção ativa..." onclick="abrirModalColecao()" style="cursor:pointer; font-weight:800; color:var(--primary);">
+<input type="hidden" id="colecaoAlvo">
+<input type="hidden" id="colecaoSenha">
+</div>
+<div class="campo-grupo">
+<label>Subcoleção (Anime)</label>
+<select id="subcolecaoAtiva" style="padding:9px; border:0.9px solid var(--border); border-radius:var(--border-radius-md); background:var(--surface); font-size:11px;" onchange="atualizarSubcolecao()">
+<option value="">-- Selecione um anime --</option>
+</select>
+</div>
+<div class="campo-grupo">
+<label>Ordem do Episódio/Conteúdo</label>
+<input type="number" id="ordemNoticia" value="1">
+</div>
+</div>
+<div class="secao-card" style="border-left: 4px solid var(--analytics);">
+<h3><i data-lucide="pie-chart"></i> Monitoramento</h3>
+<div class="grid-compact" style="grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
+<div class="campo-grupo"><label>Visits</label><input type="text" id="statsVisitantes" readonly value="0" style="background:var(--surface-100); font-size: 11px;"></div>
+<div class="campo-grupo"><label>Player</label><input type="text" id="statsPlayer" readonly value="0" style="background:var(--surface-100); font-size: 11px;"></div>
+<div class="campo-grupo"><label>Ads</label><input type="text" id="statsAds" readonly value="0" style="background:var(--surface-100); font-size: 11px;"></div>
+</div>
+<div style="display:flex; gap:7.2px; margin-top:9px;">
+<button class="btn-main" style="flex:1; background:var(--analytics); color:white;" onclick="abrirAnalytics()"><i data-lucide="bar-chart-2"></i> Analytics</button>
+<button class="btn-main" style="flex:1; background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="abrirComentarios()"><i data-lucide="message-square"></i> Comentários</button>
+<button class="btn-main" style="flex:1; background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="abrirVersoes()"><i data-lucide="history"></i> Versões</button>
+</div>
+</div>
+</div>
+<div class="form-corpo">
+<div class="secao-card">
+<h3><i data-lucide="fingerprint"></i> Identidade do Conteúdo</h3>
+<div class="campo-grupo">
+<label>Título do Anime / Filme / Série</label>
+<input type="text" id="titulo" oninput="validarCampo('titulo'); gerarSlug(this.value)" placeholder="Digite o título...">
+<div class="error-message" id="error-titulo">Título é obrigatório e deve ter pelo menos 3 caracteres</div>
+</div>
+<div class="grid-compact">
+<div class="campo-grupo">
+<label>ID do Documento (Slug)</label>
+<input type="text" id="docId" readonly style="background:var(--surface-100)">
+</div>
+<div class="campo-grupo">
+<label>Gênero / Categoria</label>
+<div style="display: flex; align-items: center;">
+<input type="text" id="categoria" placeholder="Ação, Drama, Fantasia..." oninput="validarCampo('categoria')" style="flex: 1;">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('categoria', document.getElementById('categoria').value)">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR A TODOS
+</button>
+</div>
+<div class="error-message" id="error-categoria">Categoria é obrigatória</div>
+</div>
+</div>
+<div class="campo-grupo">
+<label>Cor da Identidade Visual</label>
+<div style="display: flex; align-items: center;">
+<input type="color" id="cor" value="#71AD88" style="height:42px; width:100%; border-radius:8px; flex: 1;" oninput="atualizarCoresPainel()">
+<input type="text" id="corInput" value="#71AD88" style="width: 150px; margin-left: 9px;" placeholder="#HEX">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('cor', document.getElementById('cor').value)" style="margin-left: 9px; min-width: 120px;">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR A TODOS
+</button>
+</div>
+</div>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="photo-film"></i> Configurações de Mídia</h3>
+<div class="campo-grupo">
+<label>Imagem do Episódio (16:9)</label>
+<div class="drop-zone" id="drop-capaNoticia" onclick="document.getElementById('file-capaNoticia').click()">
+<i data-lucide="upload" style="width:18px;height:18px;margin:0 auto"></i>
+<span class="drop-zone-text">Clique ou arraste uma imagem</span>
+<input type="file" id="file-capaNoticia" accept="image/*" style="display:none" onchange="handleFileUpload(this, 'capaNoticia')">
+</div>
+<div style="display: flex; align-items: center; gap: 9px;">
+<input type="text" id="capaNoticia" oninput="validateUrl('capaNoticia')" style="flex: 1;">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('capaNoticia', document.getElementById('capaNoticia').value)">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR
+</button>
+</div>
+<button class="btn-inspect" onclick="inspectMedia('capaNoticia')"><i data-lucide="eye"></i></button>
+<div id="viewer-capaNoticia" class="inspect-viewer"></div>
+<div class="error-message" id="error-capaNoticia">URL de imagem inválida</div>
+</div>
+<div class="grid-compact">
+<div class="campo-grupo">
+<label>Capa do Anime / Filme / Série</label>
+<div class="drop-zone" id="drop-capaUrl" onclick="document.getElementById('file-capaUrl').click()">
+<i data-lucide="upload" style="width:18px;height:18px;margin:0 auto"></i>
+<span class="drop-zone-text">Clique ou arraste uma imagem</span>
+<input type="file" id="file-capaUrl" accept="image/*" style="display:none" onchange="handleFileUpload(this, 'capaUrl')">
+</div>
+<input type="text" id="capaUrl" oninput="validateUrl('capaUrl')">
+<button class="btn-inspect" onclick="inspectMedia('capaUrl')"><i data-lucide="image"></i></button>
+<div id="viewer-capaUrl" class="inspect-viewer"></div>
+<div class="error-message" id="error-capaUrl">URL de imagem inválida</div>
+</div>
+<div class="campo-grupo">
+<label>Sinopse Curta</label>
+<textarea id="capaDesc" style="min-height: 120px;" oninput="validarCampo('capaDesc')"></textarea>
+<div class="error-message" id="error-capaDesc">Descrição é obrigatória</div>
+</div>
+</div>
+<div class="campo-grupo">
+<label>ID YouTube ou Link Drive (Preview)</label>
+<input type="text" id="videoPrincipal" placeholder="Ex: https://drive.google.com/file/d/.../preview" oninput="validateUrl('videoPrincipal')">
+<button class="btn-inspect" onclick="inspectMedia('videoPrincipal')"><i data-lucide="play"></i></button>
+<div id="viewer-videoPrincipal" class="inspect-viewer"></div>
+<div class="error-message" id="error-videoPrincipal">URL de vídeo inválida</div>
+</div>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="pen-tool"></i> Sinopse do Episódio</h3>
+<div style="display:flex; gap:9px; margin-bottom:10px;">
+<button class="toggle-btn" onclick="rephraseContent()"><i data-lucide="wand-sparkles"></i> IA REESCREVER</button>
+<button class="toggle-btn" onclick="generateTags()"><i data-lucide="tag"></i> GERAR TAGS</button>
+<button class="toggle-btn" onclick="generateSEO()"><i data-lucide="search"></i> SEO DESC</button>
+</div>
+<div class="campo-grupo">
+<label>Descrição detalhada do episódio</label>
+<textarea id="resumo" style="min-height: 220px;" oninput="contarCaracteres()"></textarea>
+<div class="char-counter" id="charCounter">300 caracteres restantes</div>
+</div>
+</div>
+<div class="secao-card" style="border-left: 5px solid var(--accent);">
+<h3><i data-lucide="rectangle-ad"></i> Anúncios Exclusivos</h3>
+<div class="campo-grupo">
+<label>Link de Redirecionamento (Player)</label>
+<div style="display: flex; align-items: center; gap: 9px;">
+<input type="text" id="linkPropagandaArtigo" placeholder="Vazio = usa Global" style="flex: 1;">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('linkPropagandaArtigo', document.getElementById('linkPropagandaArtigo').value)">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR A TODOS
+</button>
+</div>
+</div>
+<div class="campo-grupo">
+<label>Script/HTML do Banner (Monetag, AdsTerra)</label>
+<div style="display: flex; align-items: center; gap: 9px;">
+<textarea id="bannerAd" style="min-height: 80px; flex: 1;" placeholder="Cole o código do anúncio aqui..."></textarea>
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('bannerAd', document.getElementById('bannerAd').value)" style="align-self: flex-start; margin-top: 9px; min-height: 80px;">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR A TODOS
+</button>
+</div>
+</div>
+</div>
+<div class="grid-compact">
+<div class="secao-card">
+<h3><i data-lucide="list-check"></i> Ficha Técnica</h3>
+<div id="container-ficha"></div>
+<button class="btn-add" onclick="adicionarFicha()">+ Atributo</button>
+<button class="btn-aplicar-todos" style="width: 100%; margin-top: 9px;" onclick="prepararAplicarTodos('ficha', coletarFicha())">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR FICHA A TODOS
+</button>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="user-cog"></i> Ficha da Categoria (Card Home)</h3>
+<div class="campo-grupo">
+<label>Link do botão baixar</label>
+<input type="text" id="linkArtigo" placeholder="https://..." oninput="validateUrl('linkArtigo')">
+<div class="error-message" id="error-linkArtigo">URL inválida</div>
+</div>
+<div class="campo-grupo">
+<label>Imagem de Perfil do Card</label>
+<div style="display: flex; align-items: center; gap: 9px;">
+<input type="text" id="perfilImg" oninput="validateUrl('perfilImg')" style="flex: 1;">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('perfilImg', document.getElementById('perfilImg').value)">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR
+</button>
+</div>
+<div class="error-message" id="error-perfilImg">URL de imagem inválida</div>
+</div>
+<div id="container-ficha-editor"></div>
+<button class="btn-add" onclick="adicionarFichaEditor()">+ Campo</button>
+</div>
+</div>
+<div class="secao-card" style="border: 2px solid var(--warning); opacity: 0.9;">
+<h3><i data-lucide="megaphone" style="color: var(--warning);"></i> Configurações Globais de Anúncio</h3>
+<div class="campo-grupo">
+<label>Link Global PADRÃO</label>
+<div style="display: flex; align-items: center; gap: 9px;">
+<input type="text" id="globalLinkPropaganda" style="flex: 1;">
+<button class="btn-aplicar-todos" onclick="prepararAplicarTodos('globalLinkPropaganda', document.getElementById('globalLinkPropaganda').value)">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR A TODOS
+</button>
+</div>
+</div>
+<div class="grid-compact">
+<div class="campo-grupo"><label>Banner Topo</label><textarea id="globalBannerTopo" style="min-height: 60px;"></textarea></div>
+<div class="campo-grupo"><label>Banner Fundo</label><textarea id="globalBannerFundo" style="min-height: 60px;"></textarea></div>
+</div>
+<button class="btn-main" style="width: 100%; background: var(--warning); color: #000; margin-top: 10px;" onclick="salvarConfigAds()">
+<i data-lucide="save"></i> SALVAR SETUP GLOBAL
+</button>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="youtube"></i> Vídeos Relacionados</h3>
+<div id="container-relacionados"></div>
+<button class="btn-add" onclick="adicionarRelacionado()">+ Vincular Vídeo</button>
+<button class="btn-aplicar-todos" style="width: 100%; margin-top: 9px;" onclick="prepararAplicarTodos('relacionados', coletarRelacionados())">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR VÍDEOS A TODOS
+</button>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="shopping-cart"></i> Vitrine de Produtos</h3>
+<div id="container-produtos"></div>
+<button class="btn-add" onclick="adicionarProduto()">+ Adicionar Produto</button>
+<button class="btn-aplicar-todos" style="width: 100%; margin-top: 9px;" onclick="prepararAplicarTodos('produtos', coletarProdutos())">
+<i data-lucide="layers" style="width:12px;height:12px"></i> APLICAR PRODUTOS A TODOS
+</button>
+</div>
+<div class="secao-card">
+<h3><i data-lucide="trending-up"></i> Métricas Manuais</h3>
+<div class="grid-compact">
+<div class="campo-grupo"><label>Likes</label><input type="number" id="curtidas" value="0" min="0"></div>
+<div class="campo-grupo"><label>Views</label><input type="number" id="visualizacoes" value="0" min="0"></div>
+</div>
+</div>
+<!-- Abas de Funcionalidades Avançadas -->
+<div class="secao-card">
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('social')">Compartilhar</button>
+<button class="tab-btn" onclick="switchTab('notify')">Notificações</button>
+<button class="tab-btn" onclick="switchTab('ai')">IA Avançada</button>
+</div>
+<div id="tab-social" class="tab-content active">
+<div class="social-share">
+<button class="social-btn facebook" onclick="shareSocial('facebook')"><i data-lucide="facebook"></i> Facebook</button>
+<button class="social-btn twitter" onclick="shareSocial('twitter')"><i data-lucide="twitter"></i> Twitter</button>
+<button class="social-btn whatsapp" onclick="shareSocial('whatsapp')"><i data-lucide="message-circle"></i> WhatsApp</button>
+<button class="social-btn copy" onclick="copyShareLink()"><i data-lucide="copy"></i> Copiar</button>
+</div>
+<div style="margin-top:14px;">
+<label style="font-size:9px; color:var(--text-muted); display:block; margin-bottom:7px;">Agendar publicação:</label>
+<input type="datetime-local" id="schedulePublish" style="margin-bottom:9px;">
+<button class="btn-main" style="width:100%; background:var(--success); color:white;" onclick="schedulePost()">Agendar Postagem</button>
+</div>
+</div>
+<div id="tab-notify" class="tab-content">
+<p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Enviar notificação push sobre este conteúdo:</p>
+<input type="text" id="notifyTitle" placeholder="Título da notificação" style="margin-bottom:9px;">
+<textarea id="notifyBody" placeholder="Corpo da mensagem..." style="min-height:60px; margin-bottom:9px;"></textarea>
+<button class="btn-main" style="width:100%; background:var(--accent); color:white;" onclick="sendPushNotification()">Enviar Notificação</button>
+</div>
+<div id="tab-ai" class="tab-content">
+<p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Ferramentas de IA para otimização:</p>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:9px;">
+<button class="btn-main" style="background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="generateTags()"><i data-lucide="tag"></i> Gerar Tags</button>
+<button class="btn-main" style="background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="generateSEO()"><i data-lucide="search"></i> Meta SEO</button>
+<button class="btn-main" style="background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="suggestImages()"><i data-lucide="image"></i> Sugerir Imagens</button>
+<button class="btn-main" style="background:var(--surface-100); color:var(--text-main); border:0.9px solid var(--border);" onclick="optimizeContent()"><i data-lucide="zap"></i> Otimizar Texto</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="acoes-wrapper">
+<div id="ai-loader-inline"><div class="dot-pulse"></div><span id="loader-text-inline">IA PROCESSANDO...</span></div>
+<div class="acoes">
+  <button class="btn-main" style="background: var(--success); color: white;" onclick="novoDocumento()" title="Novo Documento"><i data-lucide="file-plus"></i> NOVO</button>
+<button class="btn-main btn-delete" onclick="deletarDocumento()" title="Deletar"><i data-lucide="trash-2"></i></button>
+<button class="btn-main btn-ops" onclick="prepararMigracao()" title="Migrar"><i data-lucide="truck"></i></button>
+<button class="btn-main btn-sec" onclick="toggleCloud()" title="Banco de Dados"><i data-lucide="database"></i></button>
+<button class="btn-main btn-preview" onclick="previsualizar()" title="Pré-visualizar"><i data-lucide="eye"></i> PREVIEW</button>
+<button class="btn-main btn-share" onclick="abrirShare()" title="Compartilhar"><i data-lucide="share-2"></i></button>
+<button class="btn-main btn-save" onclick="salvarGeral()" title="Publicar na Nuvem"><i data-lucide="cloud-upload"></i> PUBLICAR</button>
+<button class="btn-main" style="background: var(--ops); color: white; min-width: 40px;" onclick="abrirReports()" title="Reports"><i data-lucide="flag"></i></button>
+<button class="btn-main" style="background: var(--analytics); color: white; min-width: 40px;" onclick="prepararMigracaoMassa()" title="Migração em Massa"><i data-lucide="layers"></i></button>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs, query, orderBy, writeBatch, addDoc, serverTimestamp, increment, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// ============================================================================
+// CONFIGURAÇÃO FIREBASE
+// ============================================================================
+const firebaseConfig = {
+apiKey: "AIzaSyBC_ad4X9OwCHKvcG_pNQkKEl76Zw2tu6o",
+authDomain: "anigeeknews.firebaseapp.com",
+projectId: "anigeeknews",
+storageBucket: "anigeeknews.firebasestorage.app",
+messagingSenderId: "769322939926",
+appId: "1:769322939926:web:6eb91a96a3f74670882737"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ============================================================================
+// LISTA COMPLETA DE SUBCOLEÇÕES (ANIMES)
+// ============================================================================
+const ANIME_SUBCOLLECTIONS = [
+    "Jujutsu_kaisen_shimetsu_kaiyu", "akame_ga_kill", "angel_beats", "angelic_layer",
+    "assassination_classroom", "attack_on_titan_final_season", "attack_on_titan_final_season_part_2",
+    "bakuman", "black_bullet", "black_clover", "bleach", "blue_lock", "blue_period",
+    "boku_no_hero_academia_season_5", "boku_no_hero_academia_season_6", "boruto",
+    "cells_at_work", "cells_at_work_black", "chainsaw_man", "chainsaw_man_part_2",
+    "clannad", "classicos_anigeektv", "classroom_of_the_elite", "classroom_of_the_elite_season_2",
+    "code_geass", "cowboy_bebop", "death_note", "demon_slayer_kimetsu_no_yaiba",
+    "demon_slayer_kimetsu_no_yaiba_entertainment_district", "demon_slayer_kimetsu_no_yaiba_mugen_train",
+    "demon_slayer_kimetsu_no_yaiba_swordsmith_village", "devilman_crybaby", "dr_stone",
+    "elfen_lied", "eromanga_sensei", "fire_force", "food_wars_shokugeki_no_soma",
+    "fullmetal_alchemist_brotherhood", "guilty_crown", "haikyuu", "hells_paradise",
+    "horimiya", "hunter_x_hunter", "jujutsu_kaisen", "kaguya_sama_love_is_war",
+    "kaguya_sama_love_is_war_season_2", "kaguya_sama_love_is_war_season_3",
+    "kimi_no_suizou_wo_tabetai", "kingdom", "komi_cant_communicate", "komi_cant_communicate_season_2",
+    "kuroko_no_basket", "kuroshitsuji", "lancamentos", "made_in_abyss",
+    "made_in_abyss_dawn_of_the_deep_soul", "made_in_abyss_retsujitsu", "maiden_slayer",
+    "melhores_da_temporada", "mob_psycho_100", "my_hero_academia", "my_next_life_as_a_villainess",
+    "naruto", "neon_genesis_evangelion", "noragami", "novos_episodios", "oddtaxi",
+    "one_piece", "one_punch_man", "oregairu", "oregairu_season_2", "owari_no_seraph",
+    "platinum_end", "psycho_pass", "re_zero_kara_hajimeru_isekai_seikatsu", "recomendacoes",
+    "rent_a_girlfriend", "rent_a_girlfriend_season_2", "rurouni_kenshin", "saihate_no_paladin",
+    "samurai_champloo", "sentenced_to_be_a_hero", "seven_deadly_sins", "shadows_house",
+    "shadows_house_season_2", "shaman_king", "shingeki_no_kyojin", "solo_leveling",
+    "spy_x_family", "steins_gate", "steins_gate_0", "sword_art_online",
+    "the_ancient_magus_bride", "the_case_study_of_vanitas", "the_case_study_of_vanitas_season_2",
+    "the_quintessential_quintuplets", "the_rising_of_the_shield_hero", "the_world_god_only_knows",
+    "tokyo_revengers", "toradora", "vinland_saga", "vinland_saga_season_2",
+    "weathering_with_you", "your_lie_in_april"
+];
+// ============================================================================
+// LISTAS SEPARADAS POR CATEGORIA (PARA TODAS AS COLLECTIONS)
+// ============================================================================
+const ANIMES_LIST = ANIME_SUBCOLLECTIONS;
+const FILMES_SERIES_LIST = [
+  "classicos_anigeektv",
+  "lancamentos",
+  "melhores_da_temporada",
+  "novos_episodios",
+  "recomendacoes",
+  
+  "a_casa_do_dragao_serie",
+  "ahsoka_serie",
+  "band_of_brothers_serie",
+  "beef_serie",
+  "better_call_saul_serie",
+  "black_mirror_serie",
+  "bom_dia_veronica_serie",
+  "breaking_bad_serie",
+  "brooklyn_nine_nine_serie",
+  "cangaço_novo_serie",
+  "cavaleiro_da_lua_serie",
+  "chernobyl_serie",
+  "cobrai_kai_serie",
+  "dark_serie",
+  "elite_serie",
+  "euphoria_serie",
+  "fargo_serie",
+  "friends_serie",
+  "game_of_thrones_serie",
+  "invencivel_serie",
+  "la_casa_de_papel_serie",
+  "loki_serie",
+  "lupin_serie",
+  
+  "a_morte_do_demonio_a_ascensao_filme",
+  "aquaman_2_filme",
+  "avatar_o_caminho_da_agua_filme",
+  "barbie_filme",
+  "bastardos_inglorios_filme",
+  "batman_filme",
+  "blade_runner_2049_filme",
+  "cidade_de_deus_filme",
+  "coringa_filme",
+  "de_volta_para_o_futuro_filme",
+  "duna_parte_2_filme",
+  "elementais_filme",
+  "em_frente_filme",
+  "encanto_filme",
+  "frozen_2_filme",
+  "gladiador_2_filme",
+  "glass_onion_filme",
+  "godzilla_minus_one_filme",
+  "guardioes_da_galaxia_3_filme",
+  "harry_potter_e_a_pedra_filosofal_filme",
+  "homem_aranha_atraves_do_aranhaverso_filme",
+  "interestelar_filme",
+  "john_wick_4_filme",
+  "jurassic_park_filme",
+  "killers_of_the_flower_moon_filme",
+  "luca_filme"
+];
+const GAMES_LIST = [
+  "playstation_portatil_(psp)",
+  "playStation_(psx)",
+  
+  "50_cent_bulletproof_g_unit_edition_psp",
+  "Batata_games",
+  "assassin_creed_bloodlines_psp",
+  "avatar_the_last_airbender_psp",
+  "ben_10_alien_force_psp",
+  "ben_10_protector_of_earth_psp",
+  "ben_10_ultimate_alien_cosmic_destruction_psp",
+  "bleach_heat_the_soul_7_psp",
+  "bleach_soul_resurreccion_psp",
+  "burn_out_dominator_psp",
+  "burn_out_legends_psp",
+  "call_of_duty_roads_to_victory_psp",
+  "cars_2_psp",
+  "castlevania_the_dracula_x_chronicles_psp",
+  "crash_mind_over_mutant_psp",
+  "crash_of_the_titans_psp",
+  "crash_tag_team_racing_psp",
+  "crisis_core_final_fantasy_vii_psp",
+  "dante_inferno_psp",
+  "daxter_psp",
+  "def_jam_fight_for_ny_takeover_psp",
+  "digimon_world_re_digitize_psp",
+  "disgaea_afternoon_of_darkness_psp",
+  "dissidia_012_duodecim_final_fantasy_psp",
+  "dragon_ball_z_shin_budokai_2_psp",
+  "dragon_ball_z_shin_budokai_psp",
+  "dragon_ball_z_tenkaichi_tag_team_psp",
+  "driver_76_psp",
+  "elden_ring",
+  "fairy_tail_portable_guild_psp",
+  "fate_extra_psp",
+  "fate_unlimited_codes_psp",
+  "fifa_14_psp",
+  "final_fantasy_tactics_the_war_of_the_lions_psp",
+  "final_fantasy_type_0_psp",
+  "god_of_war_chains_of_olympus_psp",
+  "god_of_war_ghost_of_sparta_psp",
+  "gran_turismo_psp",
+  "gta_liberty_city_stories_psp",
+  "gta_vice_city_stories_psp",
+  "hunter_x_hunter_wonder_adventure_psp",
+  "injustice_gods_among_us_psp",
+  "jak_and_daxter_the_lost_frontier_psp",
+  "killzone_liberation_psp",
+  "kingdom_hearts_birth_by_sleep_psp",
+  "lego_batman_the_videogame_psp",
+  "lego_harry_potter_psp",
+  "lego_star_wars_iii_the_clone_wars_psp",
+  "manhunt_2_psp",
+  "maverick_hunter_x_psp",
+  "medievil_resurrection_psp",
+  "mega_man_powered_up_psp",
+  "metal_gear_solid_peace_walker_psp",
+  "midnight_club_3_dub_edition_psp",
+  "monster_hunter_freedom_unite_psp",
+  "monster_hunter_portable_3rd_psp",
+  "mortal_kombat_unchained_psp",
+  "motorstorm_arctic_edge_psp",
+  "naruto_shippuden_ultimate_ninja_impact_psp",
+  "need_for_speed_carbon_psp",
+  "need_for_speed_most_wanted_psp",
+  "one_piece_romance_dawn_psp",
+  "pac_man_world_3_psp",
+  "parasite_eve_psp",
+  "persona_3_portable_psp",
+  "pes_2014_psp",
+  "phantasy_star_portable_2_psp",
+  "prince_of_persia_revelations_psp",
+  "prince_of_persia_the_forgotten_sands_psp",
+  "ratchet_and_clank_size_matters_psp",
+  "resident_evil_diretor_cut_psp",
+  "resistance_retribution_psp",
+  "ridge_racer_psp",
+  "scarface_money_power_respect_psp",
+  "shin_megami_tensei_persona_psp",
+  "silent_hill_origins_psp",
+  "silent_hill_shattered_memories_psp",
+  "sonic_rivals_2_psp",
+  "sonic_rivals_psp",
+  "soul_calibur_broken_destiny_psp",
+  "spider_man_3_psp",
+  "splinter_cell_essentials_psp",
+  "spyro_the_dragon_psp",
+  "star_wars_battlefront_ii_psp",
+  "star_wars_the_force_unleashed_psp",
+  "street_fighter_alpha_3_max_psp",
+  "syphon_filter_dark_mirror_psp",
+  "syphon_filter_logan_shadow_psp",
+  "tactics_ogre_let_us_cling_together_psp",
+  "tekken_6_psp",
+  "the_3rd_birthday_psp",
+  "the_warriors_psp",
+  "tomb_raider_anniversary_psp",
+  "tomb_raider_legend_psp",
+  "toy_story_3_psp",
+  "twisted_metal_head_on_psp",
+  "ufc_undisputed_2010_psp",
+  "valkyria_chronicles_ii_psp",
+  "wipeout_pulse_psp",
+  "wipeout_pure_psp",
+  "wwe_smackdown_vs_raw_2011_psp",
+  "yu_gi_oh_5ds_tag_force_6_psp"
+];
+const NOTICIAS_LIST = ["lancamentos", "novos_episodios", "recomendacoes", "melhores_da_temporada"];
+
+// ============================================================================
+// ESTRUTURA DE COLEÇÕES
+// ============================================================================
+const COLLECTIONS_MAP = [
+{ id: "anigeeknews.web.app/animes_filmes_series_games_noticias", label: "[AniGeek] Animes", folder: "AniGeek", senha: "6586", subCollections: ANIMES_LIST },
+{ id: "anigeeknews.web.app/filmes_animes_series_games_noticias", label: "[AniGeek] Filmes, Séries, Documentarios", folder: "AniGeek", senha: "6586", subCollections: FILMES_SERIES_LIST },
+{ id: "anigeeknews.web.app/games_filmes_series_animes_noticias", label: "[AniGeek] Games", folder: "AniGeek", senha: "6586", subCollections: GAMES_LIST },
+{ id: "anigeeknews.web.app/noticias_filmes_series_animes_games", label: "[AniGeek] Noticias", folder: "AniGeek", senha: "6586", subCollections: NOTICIAS_LIST },
+{ id: "lu.web.app/animes_filmes_series_games_noticias", label: "[Lu] Animes", folder: "Lu", senha: "Lu10", subCollections: ANIMES_LIST },
+{ id: "lu.web.app/filmes_animes_series_games_noticias", label: "[Lu] Filmes, Séries, Documentarios", folder: "Lu", senha: "Lu10", subCollections: FILMES_SERIES_LIST },
+{ id: "lu.web.app/games_filmes_series_animes_noticias", label: "[Lu] Games", folder: "Lu", senha: "Lu10", subCollections: GAMES_LIST },
+{ id: "lu.web.app/noticias_filmes_series_animes_games", label: "[Lu] Noticias", folder: "Lu", senha: "Lu10", subCollections: NOTICIAS_LIST },
+{ id: "meliodas.web.app/animes_filmes_series_games_noticias", label: "[Meliodas] Animes", folder: "Meliodas", senha: "meliodas456", subCollections: ANIMES_LIST },
+{ id: "meliodas.web.app/filmes_animes_series_games_noticias", label: "[Meliodas] Filmes, Séries, Documentarios", folder: "Meliodas", senha: "meliodas456", subCollections: FILMES_SERIES_LIST },
+{ id: "meliodas.web.app/games_filmes_series_animes_noticias", label: "[Meliodas] Games", folder: "Meliodas", senha: "meliodas456", subCollections: GAMES_LIST },
+{ id: "meliodas.web.app/noticias_filmes_series_animes_games", label: "[Meliodas] Noticias", folder: "Meliodas", senha: "meliodas456", subCollections: NOTICIAS_LIST },
+{ id: "daniel.web.app/animes_filmes_series_games_noticias", label: "[Daniel] Animes", folder: "Daniel", senha: "daniel789", subCollections: ANIMES_LIST },
+{ id: "daniel.web.app/filmes_animes_series_games_noticias", label: "[Daniel] Filmes, Séries, Documentarios", folder: "Daniel", senha: "daniel789", subCollections: FILMES_SERIES_LIST },
+{ id: "daniel.web.app/games_filmes_series_animes_noticias", label: "[Daniel] Games", folder: "Daniel", senha: "daniel789", subCollections: GAMES_LIST },
+{ id: "daniel.web.app/noticias_filmes_series_animes_games", label: "[Daniel] Noticias", folder: "Daniel", senha: "daniel789", subCollections: NOTICIAS_LIST },
+{ id: "edgar.web.app/animes_filmes_series_games_noticias", label: "[Edgar] Animes", folder: "Edgar", senha: "edgar847", subCollections: ANIMES_LIST },
+{ id: "edgar.web.app/filmes_animes_series_games_noticias", label: "[Edgar] Filmes, Séries, Documentarios", folder: "Edgar", senha: "edgar847", subCollections: FILMES_SERIES_LIST },
+{ id: "edgar.web.app/games_filmes_series_animes_noticias", label: "[Edgar] Games", folder: "Edgar", senha: "edgar847", subCollections: GAMES_LIST },
+{ id: "edgar.web.app/noticias_filmes_series_animes_games", label: "[Edgar] Noticias", folder: "Edgar", senha: "edgar847", subCollections: NOTICIAS_LIST },
+{ id: "leidiane.web.app/animes_filmes_series_games_noticias", label: "[Leidiane] Animes", folder: "Leidiane", senha: "leid4035", subCollections: ANIMES_LIST },
+{ id: "leidiane.web.app/filmes_animes_series_games_noticias", label: "[Leidiane] Filmes, Séries, Documentarios", folder: "Leidiane", senha: "leid4035", subCollections: FILMES_SERIES_LIST },
+{ id: "leidiane.web.app/games_filmes_series_animes_noticias", label: "[Leidiane] Games", folder: "Leidiane", senha: "leid4035", subCollections: GAMES_LIST },
+{ id: "leidiane.web.app/noticias_filmes_series_animes_games", label: "[Leidiane] Noticias", folder: "Leidiane", senha: "leid4035", subCollections: NOTICIAS_LIST },
+{ id: "rossignat.web.app/animes_filmes_series_games_noticias", label: "[Rossignat] Animes", folder: "Rossignat", senha: "ros600", subCollections: ANIMES_LIST },
+{ id: "rossignat.web.app/filmes_animes_series_games_noticias", label: "[Rossignat] Filmes, Séries, Documentarios", folder: "Rossignat", senha: "ros600", subCollections: FILMES_SERIES_LIST },
+{ id: "rossignat.web.app/games_filmes_series_animes_noticias", label: "[Rossignat] Games", folder: "Rossignat", senha: "ros600", subCollections: GAMES_LIST },
+{ id: "rossignat.web.app/noticias_filmes_series_animes_games", label: "[Rossignat] Noticias", folder: "Rossignat", senha: "ros600", subCollections: NOTICIAS_LIST },
+{ id: "wache.web.app/animes_filmes_series_games_noticias", label: "[Wache] Animes", folder: "Wache", senha: "wache123", subCollections: ANIMES_LIST },
+{ id: "wache.web.app/filmes_animes_series_games_noticias", label: "[Wache] Filmes, Séries, Documentarios", folder: "Wache", senha: "wache123", subCollections: FILMES_SERIES_LIST },
+{ id: "wache.web.app/games_filmes_series_animes_noticias", label: "[Wache] Games", folder: "Wache", senha: "wache123", subCollections: GAMES_LIST },
+{ id: "wache.web.app/noticias_filmes_series_animes_games", label: "[Wache] Noticias", folder: "Wache", senha: "wache123", subCollections: NOTICIAS_LIST },
+{ id: "ugeek-hub-paulo.web.app/animes_filmes_series_games_noticias", label: "[Paulo] Animes", folder: "Paulo", senha: "paulo123", subCollections: ANIMES_LIST },
+{ id: "ugeek-hub-paulo.web.app/filmes_animes_series_games_noticias", label: "[Paulo] Filmes, Séries, Documentarios", folder: "Paulo", senha: "paulo123", subCollections: FILMES_SERIES_LIST },
+{ id: "ugeek-hub-paulo.web.app/games_filmes_series_animes_noticias", label: "[Paulo] Games", folder: "Paulo", senha: "paulo123", subCollections: GAMES_LIST },
+{ id: "ugeek-hub-paulo.web.app/noticias_filmes_series_animes_games", label: "[Paulo] Noticias", folder: "Paulo", senha: "paulo123", subCollections: NOTICIAS_LIST },
+
+{ id: "dario.web.app/animes_filmes_series_games_noticias", label: "[Dario] Animes", folder: "Dario", senha: "dario123", subCollections: ANIMES_LIST },
+{ id: "dario.web.app/filmes_animes_series_games_noticias", label: "[Dario] Filmes, Séries, Documentarios", folder: "Dario", senha: "dario123", subCollections: FILMES_SERIES_LIST },
+{ id: "dario.web.app/games_filmes_series_animes_noticias", label: "[Dario] Games", folder: "Dario", senha: "dario123", subCollections: GAMES_LIST },
+{ id: "dario.web.app/noticias_filmes_series_animes_games", label: "[Dario] Noticias", folder: "Dario", senha: "dario123", subCollections: NOTICIAS_LIST },
+
+{ id: "kiwi.web.app/animes_filmes_series_games_noticias", label: "[Kiwi] Animes", folder: "Kiwi", senha: "kiwi123", subCollections: ANIMES_LIST },
+{ id: "kiwi.web.app/filmes_animes_series_games_noticias", label: "[Kiwi] Filmes, Séries, Documentarios", folder: "Kiwi", senha: "kiwi123", subCollections: FILMES_SERIES_LIST },
+{ id: "kiwi.web.app/games_filmes_series_animes_noticias", label: "[Kiwi] Games", folder: "Kiwi", senha: "kiwi123", subCollections: GAMES_LIST },
+{ id: "kiwi.web.app/noticias_filmes_series_animes_games", label: "[Kiwi] Noticias", folder: "Kiwi", senha: "kiwi123", subCollections: NOTICIAS_LIST },
+{ id: "chainsaw_man", label: "Chainsaw Man (Raiz)", folder: "Raiz", senha: null, subCollections: [] },
+{ id: "Jujutsu_kaisen_shimetsu_kaiyu", label: "Jujutsu Kaisen (Raiz)", folder: "Raiz", senha: null, subCollections: [] },
+{ id: "saihate_no_paladin", label: "Saihate no Paladin (Raiz)", folder: "Raiz", senha: null, subCollections: [] },
+{ id: "Animes_adm_luiz/animes/daniel.web.app/animes_filmes_series_games_noticias", label: "Animes ADM Luiz (Complexo)", folder: "Raiz", senha: null, subCollections: ANIMES_LIST }
+
+];
+
+// ============================================================================
+// VARIÁVEIS GLOBAIS
+// ============================================================================
+let currentAnimeData = null;
+let aiMode = 'medium';
+let debounceTimer;
+let hasUnsavedChanges = false;
+let colecaoAutenticada = JSON.parse(localStorage.getItem('colecoes_autenticadas')) || {};
+let temaAtual = localStorage.getItem('tema') || 'light';
+let currentSubcollection = '';
+let engagementChart, trafficChart, retentionChart;
+let pendingApplyField = null;
+let pendingApplyValue = null;
+let ultimaOrdemCarregada = 0;
+// ============================================================================
+// SISTEMA DE TEMA
+// ============================================================================
+function toggleTheme() {
+temaAtual = temaAtual === 'light' ? 'dark' : 'light';
+document.documentElement.setAttribute('data-theme', temaAtual);
+localStorage.setItem('tema', temaAtual);
+atualizarIconeTema();
+mostrarStatus(temaAtual === 'dark' ? '🌙 Modo Escuro Ativado' : '☀️ Modo Claro Ativado', temaAtual === 'dark' ? 'var(--surface)' : 'var(--primary)');
+}
+function atualizarIconeTema() {
+const icon = document.getElementById('themeIcon');
+if (icon) {
+icon.setAttribute('data-lucide', temaAtual === 'dark' ? 'sun' : 'moon');
+lucide.createIcons();
+}
+}
+document.documentElement.setAttribute('data-theme', temaAtual);
+atualizarIconeTema();
+// ============================================================================
+// SISTEMA DE AUTENTICAÇÃO POR COLEÇÃO
+// ============================================================================
+async function verificarSenhaColecao(colecaoId, senha) {
+const colecao = COLLECTIONS_MAP.find(c => c.id === colecaoId);
+if (!colecao || !colecao.senha) return true;
+if (colecaoAutenticada[colecaoId]) return true;
+if (senha === colecao.senha) { salvarAutenticacaoLocal(colecaoId); return true; }
+return false;
+}
+function salvarAutenticacaoLocal(colecaoId) {
+colecaoAutenticada[colecaoId] = true;
+localStorage.setItem('colecoes_autenticadas', JSON.stringify(colecaoAutenticada));
+}
+window.autenticarColecao = async () => {
+const senha = document.getElementById('authPassword').value;
+const colecaoId = document.getElementById('colecaoAlvo').value;
+const colecao = COLLECTIONS_MAP.find(c => c.id === colecaoId);
+if (senha === colecao.senha) {
+salvarAutenticacaoLocal(colecaoId);
+document.getElementById('authPassword').value = '';
+fecharModais();
+mostrarStatus(`✅ Acesso concedido à coleção ${colecao.label}`, "var(--success)");
+carregarListaCloud();
+carregarDraftLocal();
+} else {
+mostrarStatus("❌ Senha incorreta!", "var(--danger)");
+document.getElementById('authPassword').value = '';
+document.getElementById('authPassword').focus();
+}
+};
+async function solicitarAutenticacao(colecaoId) {
+const colecao = COLLECTIONS_MAP.find(c => c.id === colecaoId);
+if (!colecao || !colecao.senha) return true;
+if (colecaoAutenticada[colecaoId]) return true;
+document.getElementById('authModal').style.display = 'flex';
+document.getElementById('authPassword').focus();
+return false;
+}
+// ============================================================================
+// VALIDAÇÃO EM TEMPO REAL
+// ============================================================================
+window.validarCampo = (id) => {
+const el = document.getElementById(id);
+const errorEl = document.getElementById(`error-${id}`);
+let valid = true;
+if (id === 'titulo') valid = el.value.trim().length >= 3;
+else if (id === 'categoria' || id === 'capaDesc') valid = el.value.trim().length > 0;
+if (el && errorEl) {
+el.classList.toggle('error', !valid);
+errorEl.classList.toggle('show', !valid);
+}
+return valid;
+};
+window.validateUrl = (id) => {
+const el = document.getElementById(id);
+const errorEl = document.getElementById(`error-${id}`);
+const val = el.value.trim();
+let valid = true;
+if (val && !val.startsWith('http') && !val.startsWith('data:')) valid = false;
+if (id.includes('Img') || id.includes('capa') || id === 'perfilImg') {
+if (val && !/\.(jpg|jpeg|png|gif|webp)($|\?)/i.test(val) && !val.startsWith('data:')) valid = false;
+}
+if (el && errorEl) {
+el.classList.toggle('error', !valid);
+errorEl.classList.toggle('show', !valid);
+}
+return valid;
+};
+// ============================================================================
+// UPLOAD DE IMAGENS (DRAG & DROP)
+// ============================================================================
+function setupDropZones() {
+['capaNoticia', 'capaUrl'].forEach(fieldId => {
+const dropZone = document.getElementById(`drop-${fieldId}`);
+const fileInput = document.getElementById(`file-${fieldId}`);
+if (!dropZone || !fileInput) return;
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); }, false);
+});
+['dragenter', 'dragover'].forEach(eventName => {
+dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+});
+['dragleave', 'drop'].forEach(eventName => {
+dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+});
+dropZone.addEventListener('drop', (e) => {
+const files = e.dataTransfer.files;
+if (files[0]) handleFileUpload({ files }, fieldId);
+}, false);
+});
+}
+window.handleFileUpload = (input, fieldId) => {
+const file = input.files[0];
+if (!file || !file.type.startsWith('image/')) {
+mostrarStatus("Apenas imagens são permitidas", "var(--danger)");
+return;
+}
+const reader = new FileReader();
+reader.onload = (e) => {
+document.getElementById(fieldId).value = e.target.result;
+inspectMedia(fieldId);
+mostrarStatus("Imagem carregada com sucesso", "var(--success)");
+};
+reader.readAsDataURL(file);
+};
+// ============================================================================
+// AUTO-SAVE E DRAFT LOCAL
+// ============================================================================
+function setupAutoSave() {
+const formFields = ['titulo', 'categoria', 'resumo', 'cor', 'linkArtigo', 'videoPrincipal', 'capaNoticia', 'capaUrl', 'capaDesc', 'bannerAd', 'linkPropagandaArtigo', 'curtidas', 'visualizacoes', 'perfilImg', 'ordemNoticia'];
+formFields.forEach(id => {
+const el = document.getElementById(id);
+if (el) el.addEventListener('input', () => {
+validarCampo(id);
+hasUnsavedChanges = true;
+clearTimeout(debounceTimer);
+debounceTimer = setTimeout(salvarDraftLocal, 1000);
+});
+});
+}
+function salvarDraftLocal() {
+const colId = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+if (!colId || !subcol || !docId) return;
+const draftKey = `draft_${colId.replace(/\//g, '_')}_${subcol}_${docId}`;
+const dados = coletarDadosFormulario();
+localStorage.setItem(draftKey, JSON.stringify(dados));
+}
+function carregarDraftLocal() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+if (!col || !subcol || !docId) return;
+const draftKey = `draft_${col.replace(/\//g, '_')}_${subcol}_${docId}`;
+const draft = localStorage.getItem(draftKey);
+if (draft) {
+const dados = JSON.parse(draft);
+document.getElementById('titulo').value = dados.titulo || '';
+document.getElementById('categoria').value = dados.categoria || '';
+document.getElementById('resumo').value = dados.resumo || '';
+document.getElementById('cor').value = dados.cor || '#4f46e5';
+document.getElementById('corInput').value = dados.cor || '#4f46e5';
+document.getElementById('linkArtigo').value = dados.linkArtigo || '';
+document.getElementById('videoPrincipal').value = dados.videoPrincipal || '';
+document.getElementById('capaNoticia').value = dados.capaNoticia || '';
+document.getElementById('capaUrl').value = dados.capaUrl || '';
+document.getElementById('capaDesc').value = dados.capaDesc || '';
+document.getElementById('bannerAd').value = dados.bannerAd || '';
+document.getElementById('linkPropagandaArtigo').value = dados.linkPropagandaArtigo || '';
+document.getElementById('curtidas').value = dados.curtidas || 0;
+document.getElementById('visualizacoes').value = dados.visualizacoes || 0;
+document.getElementById('perfilImg').value = dados.perfilImg || '';
+document.getElementById('ordemNoticia').value = dados.ordem || 1;
+document.getElementById('container-ficha').innerHTML = '';
+dados.ficha?.forEach(f => adicionarFicha(f.label, f.valor));
+document.getElementById('container-ficha-editor').innerHTML = '';
+dados.fichaCategoria?.info?.forEach(i => adicionarFichaEditor(i.label, i.valor));
+document.getElementById('container-relacionados').innerHTML = '';
+dados.relacionados?.forEach(r => adicionarRelacionado(r.idVid, r.titulo, r.thumb));
+document.getElementById('container-produtos').innerHTML = '';
+dados.produtos?.forEach(p => adicionarProduto(p.nome, p.link, p.img, p.desc));
+atualizarCoresPainel();
+contarCaracteres();
+}
+}
+// ============================================================================
+// PRÉ-VISUALIZAÇÃO EM TEMPO REAL
+// ============================================================================
+window.previsualizar = () => {
+const dados = coletarDadosFormulario();
+const html = gerarHTMLResultado(dados);
+const frame = document.getElementById('previewFrame');
+frame.srcdoc = html;
+document.getElementById('previewModal').style.display = 'flex';
+};
+function gerarHTMLResultado(dados) {
+const cor = dados.cor || '#71AD88';
+return `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${dados.titulo || 'Pré-visualização'}</title><style>body{font-family:Arial,sans-serif;background:#f5f5f5;color:#333;line-height:1.6;margin:0;padding:20px}.hero{background:linear-gradient(135deg,${cor}44,${cor}22);padding:30px 20px;text-align:center}.hero h1{font-size:24px;margin-bottom:15px}.hero img{max-width:100%;border-radius:8px}.content{max-width:800px;margin:0 auto;padding:20px;background:white;border-radius:8px}.meta{display:flex;gap:15px;font-size:12px;color:#666;margin-bottom:15px}.summary{font-size:14px;margin-bottom:20px}.ficha{background:#f9f9f9;padding:15px;border-radius:6px;margin:20px 0}.ficha-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}.video{margin:20px 0;text-align:center}.video iframe{width:100%;max-width:640px;height:360px;border:none;border-radius:8px}</style></head><body><div class="hero"><h1>${dados.titulo || 'Título'}</h1><img src="${dados.capaUrl || 'https://via.placeholder.com/800x450'}" alt="${dados.titulo || ''}"></div><div class="content"><div class="meta"><span><strong>Categoria:</strong> ${dados.categoria || 'Não definida'}</span><span><strong>Views:</strong> ${dados.visualizacoes || 0}</span><span><strong>Likes:</strong> ${dados.curtidas || 0}</span></div><p class="summary">${dados.capaDesc || 'Descrição...'}</p><div class="ficha">${(dados.ficha || []).map(f => `<div class="ficha-item"><span>${f.label}</span><strong>${f.valor}</strong></div>`).join('')}</div><div class="summary-full">${dados.resumo || 'Conteúdo...'}</div>${dados.videoPrincipal ? `<div class="video"><iframe src="${dados.videoPrincipal}" allowfullscreen></iframe></div>` : ''}</div></body></html>`;
+}
+// ============================================================================
+// ANALYTICS DASHBOARD (CORRIGIDO)
+// ============================================================================
+window.abrirAnalytics = async () => {
+document.getElementById('analyticsModal').style.display = 'flex';
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+if (!col || !subcol || !docId) {
+mostrarStatus("Selecione um documento primeiro", "var(--warning)");
+return;
+}
+try {
+const snap = await getDoc(doc(db, col, subcol, docId));
+if (snap.exists()) {
+const d = snap.data();
+document.getElementById('statViews').textContent = d.visualizacoes || 0;
+document.getElementById('statLikes').textContent = d.curtidas || 0;
+document.getElementById('statShares').textContent = d.compartilhamentos || 0;
+document.getElementById('statTime').textContent = `${d.tempoMedio || 0}s`;
+renderCharts(d);
+} else {
+mostrarStatus("Documento não encontrado", "var(--danger)");
+}
+} catch(e) {
+console.error("Erro ao carregar analytics:", e);
+mostrarStatus("Erro ao carregar analytics", "var(--danger)");
+}
+};
+function renderCharts(dados) {
+const ctx1 = document.getElementById('engagementChart');
+const ctx2 = document.getElementById('trafficChart');
+const ctx3 = document.getElementById('retentionChart');
+if (engagementChart) engagementChart.destroy();
+if (trafficChart) trafficChart.destroy();
+if (retentionChart) retentionChart.destroy();
+if (typeof Chart === 'undefined') {
+console.warn("Chart.js não encontrado");
+return;
+}
+engagementChart = new Chart(ctx1, {
+type: 'doughnut',
+data: {
+labels: ['Curtidas', 'Comentários', 'Compartilhamentos'],
+datasets: [{
+data: [dados.curtidas || 0, dados.comentarios || 0, dados.compartilhamentos || 0],
+backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6']
+}]
+},
+options: {
+responsive: true,
+plugins: {
+legend: {
+position: 'bottom',
+labels: { font: { size: 9 } }
+}
+}
+}
+});
+trafficChart = new Chart(ctx2, {
+type: 'line',
+data: {
+labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+datasets: [{
+label: 'Visualizações',
+data: [dados.visualizacoes || 0, (dados.visualizacoes || 0) * 1.2, (dados.visualizacoes || 0) * 0.8, (dados.visualizacoes || 0) * 1.5, (dados.visualizacoes || 0) * 1.1, (dados.visualizacoes || 0) * 1.8, (dados.visualizacoes || 0) * 2],
+borderColor: '#71AD88',
+tension: 0.3,
+fill: false
+}]
+},
+options: {
+responsive: true,
+plugins: { legend: { display: false } },
+scales: {
+y: { beginAtZero: true, ticks: { font: { size: 8 } } },
+x: { ticks: { font: { size: 8 } } }
+}
+}
+});
+retentionChart = new Chart(ctx3, {
+type: 'bar',
+data: {
+labels: ['0-5s', '5-15s', '15-30s', '30s+'],
+datasets: [{
+label: 'Retenção',
+data: [15, 25, 35, 25],
+backgroundColor: '#71AD88'
+}]
+},
+options: {
+responsive: true,
+plugins: { legend: { display: false } },
+scales: {
+y: { beginAtZero: true, ticks: { font: { size: 8 } } },
+x: { ticks: { font: { size: 8 } } }
+}
+}
+});
+}
+// ============================================================================
+// COMENTÁRIOS E VERSÕES
+// ============================================================================
+window.abrirComentarios = async () => {
+document.getElementById('commentsModal').style.display = 'flex';
+await carregarComentarios();
+};
+async function carregarComentarios() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+const listEl = document.getElementById('commentsList');
+if (!col || !subcol || !docId) { listEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Selecione um documento primeiro</div>'; return; }
+try {
+const q = query(collection(db, col, subcol, docId, "comentarios"), orderBy("timestamp", "desc"));
+const snap = await getDocs(q);
+listEl.innerHTML = '';
+if (snap.empty) { listEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum comentário ainda</div>'; return; }
+snap.forEach(d => {
+const c = d.data();
+const div = document.createElement('div');
+div.className = 'comment-item';
+div.innerHTML = `<div class="comment-header"><span class="comment-user">${c.usuario || 'Anônimo'}</span><span class="comment-date">${new Date(c.timestamp?.toDate() || Date.now()).toLocaleDateString('pt-BR')}</span></div><div class="comment-text">${c.texto || ''}</div><div class="comment-actions"><button onclick="responderComentario('${d.id}')">Responder</button><button onclick="deletarComentario('${d.id}')">Excluir</button></div>`;
+listEl.appendChild(div);
+});
+} catch(e) { listEl.innerHTML = '<div style="text-align:center;color:var(--danger);padding:20px;">Erro ao carregar</div>'; }
+}
+window.abrirVersoes = async () => {
+document.getElementById('versionsModal').style.display = 'flex';
+await carregarVersoes();
+};
+async function carregarVersoes() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+const listEl = document.getElementById('versionsList');
+if (!col || !subcol || !docId) { listEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Selecione um documento primeiro</div>'; return; }
+try {
+const q = query(collection(db, col, subcol, docId, "versoes"), orderBy("timestamp", "desc"));
+const snap = await getDocs(q);
+listEl.innerHTML = '';
+if (snap.empty) { listEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Nenhuma versão salva</div>'; return; }
+snap.forEach(d => {
+const v = d.data();
+const div = document.createElement('div');
+div.className = 'version-item';
+div.innerHTML = `<div class="version-info"><strong>Versão ${v.numero || '?'}</strong><br><small>${new Date(v.timestamp?.toDate() || Date.now()).toLocaleString('pt-BR')}</small></div><div class="version-actions"><button onclick="restaurarVersao('${d.id}')">Restaurar</button></div>`;
+listEl.appendChild(div);
+});
+} catch(e) { listEl.innerHTML = '<div style="text-align:center;color:var(--danger);padding:20px;">Erro ao carregar</div>'; }
+}
+// ============================================================================
+// COMPARTILHAMENTO E NOTIFICAÇÕES
+// ============================================================================
+window.abrirShare = () => {
+const titulo = document.getElementById('titulo').value || 'Conteúdo AniGeek';
+const url = document.getElementById('linkArtigo').value || window.location.href;
+document.getElementById('shareModal').style.display = 'flex';
+};
+window.shareSocial = (rede) => {
+const titulo = document.getElementById('titulo').value || 'Conteúdo AniGeek';
+const url = document.getElementById('linkArtigo').value || window.location.href;
+const urls = {
+facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(titulo)}`,
+twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(titulo)}&url=${encodeURIComponent(url)}`,
+whatsapp: `https://wa.me/?text=${encodeURIComponent(titulo + ' - ' + url)}`
+};
+if (urls[rede]) { window.open(urls[rede], '_blank', 'width=600,height=400'); }
+};
+window.copyShareLink = () => {
+const url = document.getElementById('linkArtigo').value || window.location.href;
+navigator.clipboard.writeText(url).then(() => mostrarStatus("Link copiado!", "var(--success)"));
+};
+// ============================================================================
+// AGENDAR PUBLICAÇÃO (CORRIGIDO)
+// ============================================================================
+window.schedulePost = async () => {
+const scheduleInput = document.getElementById('schedulePublish');
+const data = scheduleInput.value;
+console.log("Valor do input:", data);
+if (!data || data.trim() === '') {
+mostrarStatus("⚠️ Selecione uma data e hora válidas", "var(--warning)");
+scheduleInput.focus();
+return;
+}
+const publishDate = new Date(data);
+const now = new Date();
+console.log("Data selecionada:", publishDate);
+console.log("Data atual:", now);
+if (isNaN(publishDate.getTime())) {
+mostrarStatus("⚠️ Data inválida!", "var(--danger)");
+return;
+}
+if (publishDate <= now) {
+mostrarStatus("⚠️ A data deve ser no futuro!", "var(--danger)");
+return;
+}
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+if (!col || !subcol || !docId) {
+mostrarStatus("⚠️ Selecione coleção, subcoleção e documento", "var(--warning)");
+return;
+}
+if (!(await solicitarAutenticacao(col))) return;
+setLoader(true, "AGENDANDO PUBLICAÇÃO...");
+try {
+const dados = coletarDadosFormulario();
+dados.publicarEm = publishDate.getTime();
+dados.visivel = false;
+await setDoc(doc(db, col, subcol, docId), dados, { merge: true });
+await salvarVersao();
+mostrarStatus(`✅ Publicação agendada para ${publishDate.toLocaleString('pt-BR')}`, "var(--success)");
+fecharModais();
+verificarPublicacoesAgendadas();
+} catch (e) {
+alert("Erro ao agendar: " + e.message);
+} finally {
+setLoader(false);
+}
+};
+async function verificarPublicacoesAgendadas() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!col || !subcol) return;
+try {
+const now = Date.now();
+const q = query(collection(db, col, subcol));
+const snap = await getDocs(q);
+const batch = writeBatch(db);
+let atualizados = 0;
+snap.forEach(docSnap => {
+const d = docSnap.data();
+if (d.publicarEm && d.publicarEm <= now && !d.visivel) {
+batch.update(doc(db, col, subcol, docSnap.id), { visivel: true });
+atualizados++;
+}
+});
+if (atualizados > 0) {
+await batch.commit();
+mostrarStatus(`${atualizados} documento(s) publicado(s) automaticamente!`, "var(--success)");
+}
+} catch(e) {
+console.error("Erro ao verificar publicações:", e);
+}
+}
+setInterval(verificarPublicacoesAgendadas, 60000);
+window.sendPushNotification = async () => {
+const titulo = document.getElementById('notifyTitle').value.trim();
+const corpo = document.getElementById('notifyBody').value.trim();
+if (!titulo || !corpo) { mostrarStatus("Preencha título e mensagem", "var(--warning)"); return; }
+try {
+await setDoc(doc(db, "notificacoes", Date.now().toString()), { titulo, corpo, docId: document.getElementById('docId').value, colecao: document.getElementById('colecaoAlvo').value, timestamp: serverTimestamp(), enviado: false });
+mostrarStatus("Notificação agendada!", "var(--success)");
+document.getElementById('notifyTitle').value = '';
+document.getElementById('notifyBody').value = '';
+} catch(e) { alert("Erro: " + e.message); }
+};
+// ============================================================================
+// AUTOMAÇÃO COM IA
+// ============================================================================
+window.generateTags = async () => {
+const titulo = document.getElementById('titulo').value;
+const resumo = document.getElementById('resumo').value;
+if (!titulo) { mostrarStatus("Digite um título primeiro", "var(--warning)"); return; }
+setLoader(true, "GERANDO TAGS COM IA...");
+try {
+const prompt = `Gere 5-8 tags relevantes em português para este conteúdo de anime: Título: "${titulo}". Resumo: "${resumo?.substring(0,200)}". Responda apenas com as tags separadas por vírgula.`;
+const tags = await callGeminiAI(prompt);
+document.getElementById('categoria').value = tags.split(',').map(t=>t.trim()).filter(Boolean).join(', ');
+mostrarStatus("Tags geradas com sucesso!", "var(--success)");
+} catch(e) { alert("Erro ao gerar tags"); } finally { setLoader(false); }
+};
+window.generateSEO = async () => {
+const titulo = document.getElementById('titulo').value;
+const resumo = document.getElementById('resumo').value;
+if (!titulo || !resumo) { mostrarStatus("Preencha título e sinopse", "var(--warning)"); return; }
+setLoader(true, "OTIMIZANDO SEO...");
+try {
+const prompt = `Crie uma meta descrição SEO de até 160 caracteres em português para: "${titulo}". Contexto: "${resumo?.substring(0,150)}". Responda apenas a descrição.`;
+const seo = await callGeminiAI(prompt);
+document.getElementById('capaDesc').value = seo;
+mostrarStatus("Meta descrição gerada!", "var(--success)");
+} catch(e) { alert("Erro ao gerar SEO"); } finally { setLoader(false); }
+};
+window.suggestImages = async () => {
+const titulo = document.getElementById('titulo').value;
+if (!titulo) { mostrarStatus("Digite um título primeiro", "var(--warning)"); return; }
+setLoader(true, "BUSCANDO IMAGENS...");
+try {
+const query = encodeURIComponent(titulo + " anime artwork");
+const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&client_id=YOUR_UNSPLASH_KEY&per_page=3`);
+const data = await res.json();
+if (data.results?.length) {
+const urls = data.results.map(r => r.urls.small);
+mostrarStatus(`${urls.length} imagens encontradas!`, "var(--success)");
+} else { mostrarStatus("Nenhuma imagem encontrada", "var(--warning)"); }
+} catch(e) { console.error(e); mostrarStatus("Erro ao buscar imagens", "var(--danger)"); } finally { setLoader(false); }
+};
+window.optimizeContent = async () => {
+const resumo = document.getElementById('resumo').value;
+if (!resumo) { mostrarStatus("Digite um conteúdo primeiro", "var(--warning)"); return; }
+setLoader(true, "OTIMIZANDO CONTEÚDO...");
+try {
+const prompt = `Melhore este texto para engajamento em português, mantendo o significado original: "${resumo.substring(0,500)}". Retorne apenas o texto otimizado.`;
+const otimizado = await callGeminiAI(prompt);
+document.getElementById('resumo').value = otimizado;
+mostrarStatus("Conteúdo otimizado!", "var(--success)");
+} catch(e) { alert("Erro ao otimizar"); } finally { setLoader(false); }
+};
+async function callGeminiAI(prompt) { return await smartTranslate(prompt, "en|pt-BR"); }
+async function smartTranslate(text, pair = "en|pt-BR") {
+if (!text) return "";
+const chunks = text.match(/.{1,450}/g) || [text];
+let results = [];
+for (const chunk of chunks) {
+try {
+const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${pair}`);
+const data = await res.json();
+results.push(data.responseData.translatedText || chunk);
+} catch (e) { results.push(chunk); }
+}
+return results.join("");
+}
+// ============================================================================
+// FUNÇÕES AUXILIARES
+// ============================================================================
+window.setAiMode = (mode, el) => {
+aiMode = mode;
+document.querySelectorAll('.ai-chip').forEach(c => c.classList.remove('active'));
+el.classList.add('active');
+};
+window.fecharModais = () => document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none');
+window.abrirModalColecao = () => document.getElementById('collectionModal').style.display = 'flex';
+window.abrirReports = () => {
+document.getElementById('reportsModal').style.display = 'flex';
+carregarReports();
+};
+window.toggleCloud = async () => {
+document.getElementById('dbModal').style.display = 'flex';
+await carregarListaCloud();
+};
+function atualizarSubcolecao() {
+currentSubcollection = document.getElementById('subcolecaoAtiva').value;
+carregarDraftLocal();
+}
+// EDITADO: Filtra subcoleções por coleção selecionada
+window.selecionarColecao = async (id, nome, senha) => {
+if (hasUnsavedChanges && !confirm("Você tem alterações não salvas. Deseja continuar e perder as alterações?")) {
+return;
+}
+document.getElementById('colecaoAlvo').value = id;
+document.getElementById('colecaoDisplay').value = nome;
+document.getElementById('colecaoSenha').value = senha || '';
+const colecaoSelecionada = COLLECTIONS_MAP.find(c => c.id === id);
+const subCollectionsParaExibir = colecaoSelecionada?.subCollections || ANIME_SUBCOLLECTIONS;
+const select = document.getElementById('subcolecaoAtiva');
+select.innerHTML = '<option value="">-- Selecione um anime --</option>';
+subCollectionsParaExibir.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+select.appendChild(opt);
+});
+const migSelect = document.getElementById('migracaoDestinoSubcolecao');
+migSelect.innerHTML = '<option value="">-- Selecione um anime --</option>';
+subCollectionsParaExibir.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+migSelect.appendChild(opt);
+});
+fecharModais();
+if (await solicitarAutenticacao(id)) {
+carregarListaCloud();
+carregarDraftLocal();
+}
+};
+window.rephraseContent = async () => {
+const txt = document.getElementById('resumo').value;
+if(!txt) return;
+setLoader(true, "REESCREVENDO TEXTO...");
+const en = await smartTranslate(txt, "pt-BR|en");
+const pt = await smartTranslate(en, "en|pt-BR");
+document.getElementById('resumo').value = pt;
+setLoader(false);
+mostrarStatus("TEXTO REESCRITO COM IA", "var(--success)");
+};
+window.buscarAnime = () => {
+const q = document.getElementById('animeQuery').value;
+const resBox = document.getElementById('animeResults');
+if(q.length < 3) return;
+resBox.style.display = 'block';
+resBox.innerHTML = '<div class="result-item">Buscando...</div>';
+fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=5`)
+.then(r => r.json()).then(d => {
+resBox.innerHTML = '';
+d.data.forEach(a => {
+const div = document.createElement('div');
+div.className = 'result-item';
+div.innerHTML = `<strong>${a.title}</strong><br><small>${a.type}</small>`;
+div.onclick = () => selecionarSerie(a);
+resBox.appendChild(div);
+});
+});
+};
+async function selecionarSerie(anime) {
+currentAnimeData = anime;
+document.getElementById('animeResults').style.display = 'none';
+document.getElementById('animeQuery').value = anime.title;
+document.getElementById('episodeArea').style.display = 'block';
+const sel = document.getElementById('episodeSelect');
+sel.innerHTML = '<option value="series_main">Página Principal</option>';
+try {
+const r = await fetch(`https://api.jikan.moe/v4/anime/${anime.mal_id}/episodes`);
+const data = await r.json();
+data.data.forEach(e => {
+const opt = document.createElement('option');
+opt.value = e.mal_id;
+opt.innerText = `Episódio ${e.mal_id}`;
+opt.dataset.title = e.title;
+sel.appendChild(opt);
+});
+} catch(err) {}
+}
+window.carregarEpisodio = async () => {
+if(!currentAnimeData) return;
+setLoader(true, "SINCRONIZANDO...");
+const select = document.getElementById('episodeSelect');
+let titleRaw = currentAnimeData.title;
+if (select.value !== 'series_main') titleRaw = `EP ${select.value} - ${select.selectedOptions[0].dataset.title}`;
+const [tit, sin] = await Promise.all([callGeminiAI(titleRaw), callGeminiAI(currentAnimeData.synopsis)]);
+document.getElementById('titulo').value = tit;
+gerarSlug(tit);
+document.getElementById('resumo').value = sin;
+document.getElementById('categoria').value = currentAnimeData.genres.map(g=>g.name).join(', ');
+document.getElementById('capaNoticia').value = currentAnimeData.images.jpg.large_image_url;
+document.getElementById('capaUrl').value = currentAnimeData.images.jpg.large_image_url;
+document.getElementById('capaDesc').value = currentAnimeData.title;
+const f = document.getElementById('container-ficha');
+f.innerHTML = '';
+adicionarFicha("Estúdio", currentAnimeData.studios[0]?.name || "N/A");
+adicionarFicha("Score", currentAnimeData.score || "N/A");
+setLoader(false);
+};
+// ============================================================================
+// FUNÇÕES DE ITENS DINÂMICOS (CORRIGIDAS)
+// ============================================================================
+window.adicionarFicha = (l='', v='') => {
+const d = document.createElement('div');
+d.className = 'item-flex';
+d.innerHTML = `<input type="text" class="f-label" value="${l}"><input type="text" class="f-valor" value="${v}"><button class="btn-remover" onclick="this.parentElement.remove()">×</button>`;
+document.getElementById('container-ficha').appendChild(d);
+};
+window.adicionarFichaEditor = (l='', v='') => {
+const d = document.createElement('div');
+d.className = 'item-flex';
+d.innerHTML = `<input type="text" class="fe-label" value="${l}"><input type="text" class="fe-valor" value="${v}"><button class="btn-remover" onclick="this.parentElement.remove()">×</button>`;
+document.getElementById('container-ficha-editor').appendChild(d);
+};
+window.adicionarRelacionado = (id='', t='', th='') => {
+const d = document.createElement('div');
+d.className = 'item-relacionado-box';
+d.innerHTML = `
+<button class="btn-remover-completo" onclick="this.parentElement.remove()">
+<i data-lucide="x" style="width:12px;height:12px"></i> REMOVER
+</button>
+<div class="item-flex">
+<input type="text" class="r-id" value="${id}" placeholder="ID Youtube" style="flex:1;">
+</div>
+<input type="text" class="r-titulo" value="${t}" placeholder="Título" style="width:100%; margin-top:9px;">
+<input type="text" class="r-thumb" value="${th}" placeholder="URL da Thumbnail" style="width:100%; margin-top:9px;">
+`;
+document.getElementById('container-relacionados').appendChild(d);
+lucide.createIcons();
+};
+window.adicionarProduto = (n='', l='', i='', ds='') => {
+const d = document.createElement('div');
+d.className = 'item-produto-box';
+d.innerHTML = `
+<button class="btn-remover-completo" onclick="this.parentElement.remove()">
+<i data-lucide="x" style="width:12px;height:12px"></i> REMOVER
+</button>
+<div class="item-flex">
+<input type="text" class="p-nome" value="${n}" placeholder="Nome" style="flex:1;">
+</div>
+<input type="text" class="p-link" value="${l}" placeholder="Link" style="width:100%; margin-top:9px;">
+<input type="text" class="p-img" value="${i}" placeholder="URL da Imagem" style="width:100%; margin-top:9px;">
+<input type="text" class="p-desc" value="${ds}" placeholder="Descrição" style="width:100%; margin-top:9px;">
+`;
+document.getElementById('container-produtos').appendChild(d);
+lucide.createIcons();
+};
+function coletarFicha() {
+return Array.from(document.querySelectorAll('#container-ficha .item-flex')).map(el => ({
+label: el.querySelector('.f-label')?.value || '',
+valor: el.querySelector('.f-valor')?.value || ''
+}));
+}
+function coletarRelacionados() {
+return Array.from(document.querySelectorAll('#container-relacionados > div')).map(el => {
+const idInput = el.querySelector('.r-id');
+const titInput = el.querySelector('.r-titulo');
+const thumbInput = el.querySelector('.r-thumb');
+return {
+idVid: idInput ? idInput.value : '',
+titulo: titInput ? titInput.value : '',
+thumb: thumbInput ? thumbInput.value : ''
+};
+});
+}
+function coletarProdutos() {
+return Array.from(document.querySelectorAll('#container-produtos > div')).map(el => {
+const nomeInput = el.querySelector('.p-nome');
+const linkInput = el.querySelector('.p-link');
+const imgInput = el.querySelector('.p-img');
+const descInput = el.querySelector('.p-desc');
+return {
+nome: nomeInput ? nomeInput.value : '',
+link: linkInput ? linkInput.value : '',
+img: imgInput ? imgInput.value : '',
+desc: descInput ? descInput.value : ''
+};
+});
+}
+// ============================================================================
+// CONFIGURAÇÕES DE ANÚNCIOS
+// ============================================================================
+window.salvarConfigAds = async () => {
+setLoader(true, "SALVANDO ANÚNCIOS...");
+const dadosAds = {
+linkPropaganda: document.getElementById('globalLinkPropaganda').value,
+bannerTopo: document.getElementById('globalBannerTopo').value,
+bannerFundo: document.getElementById('globalBannerFundo').value
+};
+try {
+await setDoc(doc(db, "configuracoes", "ads"), dadosAds);
+mostrarStatus("ADS GLOBAIS ATUALIZADOS!", "var(--warning)");
+} catch(e) { alert("Erro ao salvar Ads"); } finally { setLoader(false); }
+};
+async function carregarConfigAds() {
+try {
+const snap = await getDoc(doc(db, "configuracoes", "ads"));
+if(snap.exists()){
+const d = snap.data();
+document.getElementById('globalLinkPropaganda').value = d.linkPropaganda || '';
+document.getElementById('globalBannerTopo').value = d.bannerTopo || '';
+document.getElementById('globalBannerFundo').value = d.bannerFundo || '';
+}
+} catch(e) {}
+}
+// ============================================================================
+// SALVAR GERAL (CORRIGIDO)
+// ============================================================================
+window.salvarGeral = async () => {
+if (!validarCampo('titulo') || !validarCampo('categoria') || !validarCampo('capaDesc')) {
+mostrarStatus("Corrija os erros antes de salvar", "var(--danger)");
+return;
+}
+const id = document.getElementById('docId').value;
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!subcol) { mostrarStatus("Selecione uma subcoleção (anime)", "var(--warning)"); return; }
+if (!(await solicitarAutenticacao(col))) return;
+setLoader(true, "SALVANDO NO FIREBASE...");
+try {
+const dados = coletarDadosFormulario();
+await setDoc(doc(db, col, subcol, id), dados, { merge: true });
+await salvarVersao();
+hasUnsavedChanges = false;
+const draftKey = `draft_${col.replace(/\//g, '_')}_${subcol}_${id}`;
+localStorage.removeItem(draftKey);
+mostrarStatus("SALVO NA NUVEM!", "var(--success)");
+carregarListaCloud();
+} catch (e) { alert("Erro ao salvar: " + e.message); } finally { setLoader(false); }
+};
+// ============================================================================
+// CARREGAR ANALYTICS
+// ============================================================================
+window.carregarAnalytics = async (col, subcol, docId) => {
+try {
+const visitantesRef = collection(db, col, subcol, docId, "visitantes");
+const snapshot = await getDocs(visitantesRef);
+document.getElementById('statsVisitantes').value = snapshot.size;
+} catch (e) { console.error(e); }
+};
+// ============================================================================
+// CARREGAR POR ID (TOTALMENTE CORRIGIDO - TODOS OS CAMPOS)
+// ============================================================================
+window.carregarPorID = async (id) => {
+if (hasUnsavedChanges && !confirm("Você tem alterações não salvas. Deseja continuar e perder as alterações?")) {
+return;
+}
+setLoader(true);
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!(await solicitarAutenticacao(col))) { setLoader(false); return; }
+const snap = await getDoc(doc(db, col, subcol, id));
+if(snap.exists()){
+const d = snap.data();
+if (d.publicarEm && d.publicarEm > Date.now() && !d.visivel) {
+mostrarStatus("⏰ Documento agendado para publicação futura", "var(--warning)");
+}
+// ID e Ordem
+document.getElementById('docId').value = id;
+document.getElementById('ordemNoticia').value = d.ordem || 1;
+ultimaOrdemCarregada = d.ordem || 1;
+// Campos Principais
+document.getElementById('titulo').value = d.titulo || '';
+document.getElementById('resumo').value = d.resumo || '';
+document.getElementById('categoria').value = d.categoria || '';
+// Imagens
+document.getElementById('capaNoticia').value = d.capaNoticia || '';
+document.getElementById('capaUrl').value = d.capaUrl || '';
+document.getElementById('capaDesc').value = d.capaDesc || '';
+document.getElementById('perfilImg').value = d.perfilImg || '';
+// Vídeo
+document.getElementById('videoPrincipal').value = d.videoPrincipal || '';
+// Anúncios
+document.getElementById('bannerAd').value = d.bannerAd || '';
+document.getElementById('linkPropagandaArtigo').value = d.linkPropagandaArtigo || '';
+// Link do Artigo
+document.getElementById('linkArtigo').value = d.linkArtigo || '';
+// Cor (atualiza ambos os campos)
+document.getElementById('cor').value = d.cor || '#4f46e5';
+document.getElementById('corInput').value = d.cor || '#4f46e5';
+// Métricas
+document.getElementById('curtidas').value = d.curtidas || 0;
+document.getElementById('visualizacoes').value = d.visualizacoes || 0;
+// Ficha Técnica
+document.getElementById('container-ficha').innerHTML = '';
+d.ficha?.forEach(f => adicionarFicha(f.label, f.valor));
+// Ficha da Categoria
+document.getElementById('container-ficha-editor').innerHTML = '';
+d.fichaCategoria?.info?.forEach(i => adicionarFichaEditor(i.label, i.valor));
+// Vídeos Relacionados (COMPLETO)
+document.getElementById('container-relacionados').innerHTML = '';
+d.relacionados?.forEach(r => adicionarRelacionado(r.idVid, r.titulo, r.thumb));
+// Vitrine de Produtos (COMPLETO)
+document.getElementById('container-produtos').innerHTML = '';
+d.produtos?.forEach(p => adicionarProduto(p.nome, p.link, p.img, p.desc));
+// Atualiza cores e contadores
+await carregarAnalytics(col, subcol, id);
+atualizarCoresPainel();
+contarCaracteres();
+hasUnsavedChanges = false;
+}
+setLoader(false);
+};
+// ============================================================================
+// CARREGAR LISTA DA NUVEM
+// ============================================================================
+async function carregarListaCloud() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if(!col || !subcol) return;
+if (!(await verificarSenhaColecao(col))) {
+document.getElementById('dbList').innerHTML = '<div style="padding:14px; text-align:center; color:var(--warning);">🔒 Bloqueado</div>';
+return;
+}
+try {
+const q = query(collection(db, col, subcol), orderBy("ordem", "asc"));
+const snap = await getDocs(q);
+const listEl = document.getElementById('dbList');
+listEl.innerHTML = '';
+snap.forEach(d => {
+const data = d.data();
+const btn = document.createElement('button');
+btn.className = 'btn-main btn-sec';
+btn.style.width = '100%'; btn.style.marginBottom = '8px';
+let statusIcon = '';
+if (data.publicarEm && data.publicarEm > Date.now()) {
+statusIcon = ' ⏰';
+btn.style.opacity = '0.7';
+}
+btn.innerHTML = `<span>#${data.ordem} - ${data.titulo}${statusIcon}</span>`;
+btn.onclick = () => { carregarPorID(d.id); fecharModais(); };
+listEl.appendChild(btn);
+});
+lucide.createIcons();
+} catch(e) { document.getElementById('dbList').innerHTML = '...'; }
+}
+// ============================================================================
+// INSPECIONAR MÍDIA
+// ============================================================================
+window.inspectMedia = (fieldId) => {
+let val = document.getElementById(fieldId).value.trim();
+const viewer = document.getElementById('viewer-' + fieldId);
+if(!val) return;
+viewer.style.display = viewer.style.display === 'block' ? 'none' : 'block';
+if(val.includes('youtube') || val.includes('youtu.be')) {
+const videoId = val.split('v=')[1]?.split('&')[0] || val.split('/').pop();
+viewer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" style="border:none; width:100%; height:200px"></iframe>`;
+} else if(val.startsWith('data:image')) {
+viewer.innerHTML = `<img src="${val}" style="width:100%; object-fit:contain">`;
+} else {
+viewer.innerHTML = `<img src="${val}" style="width:100%; object-fit:cover">`;
+}
+};
+// ============================================================================
+// GERAR SLUG
+// ============================================================================
+window.gerarSlug = (v) => {
+const s = v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+document.getElementById('docId').value = s;
+};
+// ============================================================================
+// MOSTRAR STATUS
+// ============================================================================
+function mostrarStatus(txt, cor) {
+const s = document.getElementById('msgStatus');
+if(s) {
+s.style.display = "block";
+s.style.background = cor;
+s.innerText = txt;
+setTimeout(() => s.style.display = "none", 3000);
+}
+}
+// ============================================================================
+// DELETAR DOCUMENTO (CORRIGIDO - NÃO SAI DA COLEÇÃO)
+// ============================================================================
+window.deletarDocumento = async () => {
+if (!confirm("Deletar permanentemente?")) return;
+const id = document.getElementById('docId').value;
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if(!id || !subcol) return;
+if (!(await solicitarAutenticacao(col))) return;
+try {
+await deleteDoc(doc(db, col, subcol, id));
+// LIMPA O FORMULÁRIO MAS MANTÉM A COLEÇÃO/SUBCOLEÇÃO
+limparFormulario();
+mostrarStatus("✅ Documento deletado com sucesso!", "var(--success)");
+carregarListaCloud();
+} catch (e) { alert(e.message); }
+};
+// ============================================================================
+// LIMPAR FORMULÁRIO (NOVA FUNÇÃO)
+// ============================================================================
+function limparFormulario() {
+document.getElementById('docId').value = '';
+document.getElementById('titulo').value = '';
+document.getElementById('resumo').value = '';
+document.getElementById('categoria').value = '';
+document.getElementById('capaNoticia').value = '';
+document.getElementById('capaUrl').value = '';
+document.getElementById('capaDesc').value = '';
+document.getElementById('perfilImg').value = '';
+document.getElementById('videoPrincipal').value = '';
+document.getElementById('bannerAd').value = '';
+document.getElementById('linkPropagandaArtigo').value = '';
+document.getElementById('linkArtigo').value = '';
+document.getElementById('cor').value = '#71AD88';
+document.getElementById('corInput').value = '#71AD88';
+document.getElementById('curtidas').value = '0';
+document.getElementById('visualizacoes').value = '0';
+document.getElementById('ordemNoticia').value = ultimaOrdemCarregada + 1;
+document.getElementById('container-ficha').innerHTML = '';
+document.getElementById('container-ficha-editor').innerHTML = '';
+document.getElementById('container-relacionados').innerHTML = '';
+document.getElementById('container-produtos').innerHTML = '';
+document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+document.querySelectorAll('input.error, textarea.error').forEach(el => el.classList.remove('error'));
+atualizarCoresPainel();
+contarCaracteres();
+hasUnsavedChanges = false;
+}
+// ============================================================================
+// NOVO DOCUMENTO (NOVA FUNÇÃO - FLUXO PRÁTICO)
+// ============================================================================
+window.novoDocumento = () => {
+if (hasUnsavedChanges && !confirm("Você tem alterações não salvas. Deseja continuar e perder as alterações?")) {
+return;
+}
+limparFormulario();
+mostrarStatus("📝 Novo documento pronto para edição!", "var(--success)");
+document.getElementById('titulo').focus();
+};
+// ============================================================================
+// COLETAR DADOS DO FORMULÁRIO (COMPLETO)
+// ============================================================================
+function coletarDadosFormulario() {
+return {
+ordem: parseInt(document.getElementById('ordemNoticia').value) || 0,
+titulo: document.getElementById('titulo').value,
+categoria: document.getElementById('categoria').value,
+resumo: document.getElementById('resumo').value,
+cor: document.getElementById('cor').value,
+linkArtigo: document.getElementById('linkArtigo').value,
+videoPrincipal: document.getElementById('videoPrincipal').value,
+capaNoticia: document.getElementById('capaNoticia').value,
+capaUrl: document.getElementById('capaUrl').value,
+capaDesc: document.getElementById('capaDesc').value,
+bannerAd: document.getElementById('bannerAd').value,
+linkPropagandaArtigo: document.getElementById('linkPropagandaArtigo').value,
+curtidas: parseInt(document.getElementById('curtidas').value) || 0,
+visualizacoes: parseInt(document.getElementById('visualizacoes').value) || 0,
+perfilImg: document.getElementById('perfilImg').value,
+fichaCategoria: {
+info: Array.from(document.querySelectorAll('#container-ficha-editor .item-flex')).map(el => ({
+label: el.querySelector('.fe-label')?.value || '',
+valor: el.querySelector('.fe-valor')?.value || ''
+}))
+},
+ficha: coletarFicha(),
+relacionados: coletarRelacionados(),
+produtos: coletarProdutos(),
+timestamp: Date.now()
+};
+}
+// ============================================================================
+// ATUALIZAR CORES DO PAINEL
+// ============================================================================
+function atualizarCoresPainel() {
+const cor = document.getElementById('cor').value;
+document.documentElement.style.setProperty('--primary', cor);
+document.documentElement.style.setProperty('--primary-dark', ajustarCorEscura(cor));
+}
+function ajustarCorEscura(hex) {
+let r = parseInt(hex.slice(1, 3), 16);
+let g = parseInt(hex.slice(3, 5), 16);
+let b = parseInt(hex.slice(5, 7), 16);
+r = Math.max(0, r - 50);
+g = Math.max(0, g - 50);
+b = Math.max(0, b - 50);
+return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+// ============================================================================
+// CONTAR CARACTERES
+// ============================================================================
+function contarCaracteres() {
+const resumo = document.getElementById('resumo').value;
+const max = 300;
+const restantes = max - resumo.length;
+const counter = document.getElementById('charCounter');
+if(counter) {
+counter.textContent = `${Math.max(0, restantes)} caracteres restantes`;
+counter.className = restantes < 100 ? 'char-counter warning' : 'char-counter';
+}
+}
+// ============================================================================
+// LOADER
+// ============================================================================
+function setLoader(show, text = "") {
+const loader = document.getElementById('ai-loader-inline');
+const txt = document.getElementById('loader-text-inline');
+if(loader) loader.style.display = show ? 'flex' : 'none';
+if(text && txt) txt.innerText = text;
+}
+// ============================================================================
+// FILTRAR DB
+// ============================================================================
+window.filtrarDB = () => {
+const termo = document.getElementById('dbSearch').value.toLowerCase();
+const itens = document.querySelectorAll('#dbList button');
+itens.forEach(btn => {
+const texto = btn.textContent.toLowerCase();
+btn.style.display = texto.includes(termo) ? 'block' : 'none';
+});
+};
+// ============================================================================
+// SWITCH TAB
+// ============================================================================
+window.switchTab = (tabName) => {
+document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+event.currentTarget.classList.add('active');
+document.getElementById(`tab-${tabName}`).classList.add('active');
+};
+// ============================================================================
+// LIBERAR POR PROPAGANDA
+// ============================================================================
+window.liberarPorPropaganda = () => {
+mostrarStatus("Aguarde 5 segundos...", "var(--warning)");
+setTimeout(() => {
+const colecaoId = document.getElementById('colecaoAlvo').value;
+salvarAutenticacaoLocal(colecaoId);
+document.getElementById('authModal').style.display = 'none';
+mostrarStatus("Acesso liberado!", "var(--success)");
+carregarListaCloud();
+carregarDraftLocal();
+}, 5000);
+};
+// ============================================================================
+// APLICAR CAMPO A TODOS OS DOCUMENTOS (CORRIGIDO)
+// ============================================================================
+window.prepararAplicarTodos = (campo, valor) => {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!col || !subcol) {
+mostrarStatus("Selecione coleção e subcoleção primeiro", "var(--warning)");
+return;
+}
+pendingApplyField = campo;
+pendingApplyValue = valor;
+document.getElementById('applyToAllFieldName').textContent = campo;
+document.getElementById('applyToAllFieldValue').textContent = typeof valor === 'object' ? JSON.stringify(valor, null, 2) : valor;
+document.getElementById('applyToAllModal').style.display = 'flex';
+};
+window.confirmarAplicarATodos = async () => {
+if (!pendingApplyField || !pendingApplyValue) {
+mostrarStatus("Nenhum campo selecionado", "var(--warning)");
+return;
+}
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!(await solicitarAutenticacao(col))) return;
+fecharModais();
+setLoader(true, "APLICANDO A TODOS OS DOCUMENTOS...");
+try {
+const q = query(collection(db, col, subcol));
+const snap = await getDocs(q);
+const batch = writeBatch(db);
+let count = 0;
+snap.forEach(docSnap => {
+const updateData = {};
+updateData[pendingApplyField] = pendingApplyValue;
+batch.update(doc(db, col, subcol, docSnap.id), updateData);
+count++;
+});
+await batch.commit();
+mostrarStatus(`✅ Campo "${pendingApplyField}" aplicado a ${count} documentos!`, "var(--success)");
+} catch (error) {
+alert("Erro: " + error.message);
+} finally {
+setLoader(false);
+pendingApplyField = null;
+pendingApplyValue = null;
+}
+};
+// ============================================================================
+// MIGRAÇÃO COM SUPORTE A SUBCOLEÇÕES
+// ============================================================================
+window.prepararMigracao = async () => {
+const docId = document.getElementById('docId').value;
+const colOrigem = document.getElementById('colecaoAlvo').value;
+const subcolOrigem = document.getElementById('subcolecaoAtiva').value;
+if(!docId || !subcolOrigem) return alert("Selecione ou crie um documento e uma subcoleção primeiro.");
+if (!(await solicitarAutenticacao(colOrigem))) return;
+const footer = document.getElementById('migrationFooter');
+footer.innerHTML = `
+<button class="btn-main" style="background: var(--ops); color: white;" onclick="executarMigracao('copiar')">
+<i data-lucide="copy" style="width:16px;height:16px"></i> COPIAR / SOBRESCREVER
+</button>
+<button class="btn-main" style="background: var(--secondary); color: white;" onclick="executarMigracao('mover')">
+<i data-lucide="arrow-right-left" style="width:16px;height:16px"></i> MOVER (RECORTAR)
+</button>
+`;
+document.getElementById('migracaoOrigemColecao').textContent = colOrigem;
+document.getElementById('migracaoOrigemSubcolecao').textContent = subcolOrigem;
+document.getElementById('migracaoOrigemDoc').textContent = docId;
+document.getElementById('migracaoDestinoID').value = docId;
+const sel = document.getElementById('migracaoDestinoColecao');
+sel.innerHTML = '';
+COLLECTIONS_MAP.forEach(c => {
+const opt = document.createElement('option');
+opt.value = c.id;
+opt.textContent = c.label;
+if(c.id === colOrigem) opt.selected = true;
+sel.appendChild(opt);
+});
+const subSel = document.getElementById('migracaoDestinoSubcolecao');
+subSel.innerHTML = '<option value="">-- Selecione um anime --</option>';
+const colecaoDestino = COLLECTIONS_MAP.find(c => c.id === sel.value) || COLLECTIONS_MAP[0];
+const subCollectionsDestino = colecaoDestino?.subCollections || ANIME_SUBCOLLECTIONS;
+subCollectionsDestino.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+if(anime === subcolOrigem) opt.selected = true;
+subSel.appendChild(opt);
+});
+sel.addEventListener('change', () => {
+const colecaoDestino = COLLECTIONS_MAP.find(c => c.id === sel.value);
+const subCollectionsDestino = colecaoDestino?.subCollections || ANIME_SUBCOLLECTIONS;
+subSel.innerHTML = '<option value="">-- Selecione um anime --</option>';
+subCollectionsDestino.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+subSel.appendChild(opt);
+});
+});
+document.getElementById('multiDestinoContainer').style.display = 'none';
+document.getElementById('migrationModal').style.display = 'flex';
+lucide.createIcons();
+};
+window.executarMigracao = async (acao) => {
+const docIdOrigem = document.getElementById('docId').value;
+const colOrigem = document.getElementById('colecaoAlvo').value;
+const subcolOrigem = document.getElementById('subcolecaoAtiva').value;
+const colDestino = document.getElementById('migracaoDestinoColecao').value;
+const subcolDestino = document.getElementById('migracaoDestinoSubcolecao').value;
+let docIdDestino = document.getElementById('migracaoDestinoID').value.trim() || docIdOrigem;
+if (!subcolDestino) { mostrarStatus("Selecione uma subcoleção de destino", "var(--warning)"); return; }
+if (!(await solicitarAutenticacao(colDestino))) return;
+if(!confirm(`Confirmar ${acao.toUpperCase()}?`)) return;
+setLoader(true, `EXECUTANDO ${acao.toUpperCase()}...`);
+try {
+const dados = coletarDadosFormulario();
+await setDoc(doc(db, colDestino, subcolDestino, docIdDestino), dados);
+if (acao === 'mover' && (colOrigem !== colDestino || subcolOrigem !== subcolDestino || docIdOrigem !== docIdDestino)) {
+await deleteDoc(doc(db, colOrigem, subcolOrigem, docIdOrigem));
+}
+mostrarStatus("OPERACAO CONCLUIDA!", "var(--success)");
+fecharModais();
+} catch (error) { alert("Erro: " + error.message); } finally { setLoader(false); }
+};
+// ============================================================================
+// MIGRAÇÃO EM MASSA (CORRIGIDO)
+// ============================================================================
+window.prepararMigracaoMassa = () => {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+if (!col || !subcol) {
+mostrarStatus("Selecione uma coleção e subcoleção primeiro", "var(--warning)");
+return;
+}
+const selOrigem = document.getElementById('massOrigemColecao');
+selOrigem.innerHTML = '';
+COLLECTIONS_MAP.forEach(c => {
+const opt = document.createElement('option');
+opt.value = c.id;
+opt.textContent = c.label;
+if (c.id === col) opt.selected = true;
+selOrigem.appendChild(opt);
+});
+const selOrigemSub = document.getElementById('massOrigemSubcolecao');
+selOrigemSub.innerHTML = '';
+const colecaoOrigem = COLLECTIONS_MAP.find(c => c.id === selOrigem.value) || COLLECTIONS_MAP[0];
+const subCollectionsOrigem = colecaoOrigem?.subCollections || ANIME_SUBCOLLECTIONS;
+subCollectionsOrigem.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+if (anime === subcol) opt.selected = true;
+selOrigemSub.appendChild(opt);
+});
+const selDestino = document.getElementById('massDestinoColecao');
+selDestino.innerHTML = '';
+COLLECTIONS_MAP.forEach(c => {
+const opt = document.createElement('option');
+opt.value = c.id;
+opt.textContent = c.label;
+selDestino.appendChild(opt);
+});
+const selDestinoSub = document.getElementById('massDestinoSubcolecao');
+selDestinoSub.innerHTML = '';
+const colecaoDestino = COLLECTIONS_MAP.find(c => c.id === selDestino.value) || COLLECTIONS_MAP[0];
+const subCollectionsDestino = colecaoDestino?.subCollections || ANIME_SUBCOLLECTIONS;
+subCollectionsDestino.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+selDestinoSub.appendChild(opt);
+});
+selOrigem.addEventListener('change', () => {
+const colecaoOrigem = COLLECTIONS_MAP.find(c => c.id === selOrigem.value);
+const subCollectionsOrigem = colecaoOrigem?.subCollections || ANIME_SUBCOLLECTIONS;
+selOrigemSub.innerHTML = '';
+subCollectionsOrigem.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+selOrigemSub.appendChild(opt);
+});
+});
+selDestino.addEventListener('change', () => {
+const colecaoDestino = COLLECTIONS_MAP.find(c => c.id === selDestino.value);
+const subCollectionsDestino = colecaoDestino?.subCollections || ANIME_SUBCOLLECTIONS;
+selDestinoSub.innerHTML = '';
+subCollectionsDestino.forEach(anime => {
+const opt = document.createElement('option');
+opt.value = anime;
+opt.textContent = anime.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+selDestinoSub.appendChild(opt);
+});
+});
+document.getElementById('massMigrationModal').style.display = 'flex';
+};
+window.executarMigracaoMassa = async () => {
+const origemColecao = document.getElementById('massOrigemColecao').value;
+const origemSub = document.getElementById('massOrigemSubcolecao').value;
+const destinoColecao = document.getElementById('massDestinoColecao').value;
+const destinoSub = document.getElementById('massDestinoSubcolecao').value;
+const prefixo = document.getElementById('massPrefixoID').value.trim();
+if (!origemSub || !destinoSub) {
+mostrarStatus("Selecione subcoleções de origem e destino", "var(--warning)");
+return;
+}
+if (!(await solicitarAutenticacao(origemColecao)) || !(await solicitarAutenticacao(destinoColecao))) return;
+if (!confirm("Tem certeza que deseja migrar TODOS os documentos desta subcoleção?")) return;
+setLoader(true, "INICIANDO MIGRAÇÃO EM MASSA...");
+try {
+const q = query(collection(db, origemColecao, origemSub), orderBy("ordem", "asc"));
+const snap = await getDocs(q);
+const batch = writeBatch(db);
+let count = 0;
+snap.forEach((docSnap) => {
+const dados = docSnap.data();
+const novoId = prefixo ? `${prefixo}_${docSnap.id}` : docSnap.id;
+const refDestino = doc(db, destinoColecao, destinoSub, novoId);
+batch.set(refDestino, dados);
+count++;
+});
+await batch.commit();
+mostrarStatus(`MIGRAÇÃO EM MASSA CONCLUÍDA! ${count} documentos migrados`, "var(--success)");
+fecharModais();
+} catch (error) {
+alert("Erro: " + error.message);
+} finally {
+setLoader(false);
+}
+};
+// ============================================================================
+// REPORTS GLOBAIS
+// ============================================================================
+async function carregarReports() {
+const listEl = document.getElementById('reportsList');
+listEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Carregando reports...</div>';
+try {
+const q = query(collection(db, "report"), orderBy("timestamp", "desc"));
+const snap = await getDocs(q);
+listEl.innerHTML = '';
+if (snap.empty) {
+listEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Nenhum report encontrado</div>';
+return;
+}
+snap.forEach(d => {
+const r = d.data();
+const div = document.createElement('div');
+div.style.padding = '12px';
+div.style.borderBottom = '1px solid var(--border)';
+div.style.fontSize = '11px';
+div.innerHTML = `
+<div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+<strong>${r.titulo || 'Sem título'}</strong>
+<span style="color:var(--text-muted); font-size:9px;">${new Date(r.timestamp?.toDate() || Date.now()).toLocaleString('pt-BR')}</span>
+</div>
+<div style="color:var(--text-muted); font-size:9px; margin-bottom:6px;">Tipo: ${r.tipo || 'Não especificado'}</div>
+<div style="color:var(--text-muted); font-size:9px;">Reportado por: ${r.reportedBy || 'Anônimo'}</div>
+`;
+listEl.appendChild(div);
+});
+} catch(e) {
+listEl.innerHTML = '<div style="text-align:center; color:var(--danger); padding:20px;">Erro ao carregar reports</div>';
+}
+}
+window.filtrarReports = () => {
+const tipo = document.getElementById('reportFilter').value;
+const itens = document.querySelectorAll('#reportsList > div');
+itens.forEach(div => {
+const texto = div.textContent.toLowerCase();
+div.style.display = tipo === 'todos' || texto.includes(tipo) ? 'block' : 'none';
+});
+};
+// ============================================================================
+// SALVAR VERSÃO (CORRIGIDO)
+// ============================================================================
+async function salvarVersao() {
+const col = document.getElementById('colecaoAlvo').value;
+const subcol = document.getElementById('subcolecaoAtiva').value;
+const docId = document.getElementById('docId').value;
+if (!col || !subcol || !docId) return;
+try {
+const versaoRef = collection(db, col, subcol, docId, "versoes");
+const q = query(versaoRef, orderBy("timestamp", "desc"));
+const snap = await getDocs(q);
+const numero = snap.size + 1;
+const dados = coletarDadosFormulario();
+await addDoc(versaoRef, {
+dados: dados,
+numero: numero,
+timestamp: serverTimestamp()
+});
+} catch(e) {
+console.error("Erro ao salvar versão:", e);
+}
+}
+// ============================================================================
+// SINCRONIZAR INPUT DE COR (NOVA FUNÇÃO)
+// ============================================================================
+function setupCorInput() {
+const colorPicker = document.getElementById('cor');
+const corInput = document.getElementById('corInput');
+if (colorPicker && corInput) {
+colorPicker.addEventListener('input', () => {
+corInput.value = colorPicker.value;
+atualizarCoresPainel();
+});
+corInput.addEventListener('input', () => {
+if (/^#[0-9A-Fa-f]{6}$/.test(corInput.value)) {
+colorPicker.value = corInput.value;
+atualizarCoresPainel();
+}
+});
+}
+}
+// ============================================================================
+// INICIALIZAÇÃO
+// ============================================================================
+window.addEventListener('DOMContentLoaded', () => {
+lucide.createIcons();
+setupAutoSave();
+setupDropZones();
+setupCorInput(); // NOVO: Setup do input de cor
+carregarConfigAds();
+renderCollectionsList();
+verificarPublicacoesAgendadas();
+});
+function renderCollectionsList() {
+const container = document.getElementById('listaColecoesBtn');
+if(!container) return;
+container.innerHTML = '';
+const folders = {};
+COLLECTIONS_MAP.forEach(c => {
+if (!folders[c.folder]) folders[c.folder] = [];
+folders[c.folder].push(c);
+});
+for (const [folderName, items] of Object.entries(folders)) {
+const folderDiv = document.createElement('div');
+folderDiv.className = 'collection-folder';
+const header = document.createElement('div');
+header.className = 'folder-header';
+header.innerHTML = `<i data-lucide="folder" style="width:16px;height:16px"></i> ${folderName} 📁`;
+header.onclick = () => {
+const content = header.nextElementSibling;
+content.classList.toggle('active');
+lucide.createIcons();
+};
+const content = document.createElement('div');
+content.className = 'folder-content';
+items.forEach(c => {
+const btn = document.createElement('div');
+btn.className = 'folder-item';
+btn.innerHTML = `<i data-lucide="${c.senha ? 'lock' : 'file'}" style="width:14px;height:14px"></i> ${c.label}`;
+btn.onclick = (e) => { e.stopPropagation(); selecionarColecao(c.id, c.label, c.senha); };
+content.appendChild(btn);
+});
+folderDiv.appendChild(header);
+folderDiv.appendChild(content);
+container.appendChild(folderDiv);
+}
+lucide.createIcons();
+}
+// Exporta funções para escopo global
+window.toggleTheme = toggleTheme;
+window.autenticarColecao = autenticarColecao;
+window.confirmarAplicarATodos = confirmarAplicarATodos;
+window.novoDocumento = novoDocumento; // NOVO: Exporta função de novo documento
+// Atalhos de teclado
+document.addEventListener('keydown', (e) => {
+if (e.ctrlKey || e.metaKey) {
+if (e.key === 's') { e.preventDefault(); salvarGeral(); }
+if (e.key === 'p') { e.preventDefault(); previsualizar(); }
+if (e.key === 'd') { e.preventDefault(); deletarDocumento(); }
+if (e.key === 'n') { e.preventDefault(); novoDocumento(); } // NOVO: Atalho para novo documento
+}
+});
+// Warning de alterações não salvas
+window.addEventListener('beforeunload', (e) => {
+if (hasUnsavedChanges) {
+e.preventDefault();
+e.returnValue = 'Você tem alterações não salvas. Tem certeza que deseja sair?';
+}
+});
+</script>
+</body>
+</html>

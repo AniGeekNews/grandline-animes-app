@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniGeek News</title>
+  <!-- ✅ IM Fell DW Pica SC Font + FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica+SC&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    /* ✅ Todos os estilos do código antigo (mantidos) */
+    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    .ad-container-anigeek { text-align: center; margin: 15px 0; overflow: hidden; min-height: 50px; }
+    .ad-container-anigeek img { max-width: 100%; border-radius: 8px; cursor: pointer; }
+    .player-overlay-ad {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 10; cursor: pointer; background: transparent;
+    }
+    .destaque-media { position: relative; }
+    #container-principal { min-height: 200px; }
+    .destaque-secao { transition: opacity 0.3s ease; }
+
+    /* ✅ FIX 1: Capa sem bordas arredondadas + imagem inteira em mobile */
+    .hero-topo-container {
+      position: relative;
+      margin-top: -200px;
+      margin-bottom: 200px;
+      z-index: 5;
+      border-radius: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    .hero-topo-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: contain;
+      display: block;
+      background: #000;
+      border-radius: 0;
+    }
+
+    /* ✅ Tema escuro: branco puro sem transparência */
+    [data-theme="dark"] .hero-topo-desc-bloco,
+    [data-theme="dark"] .destaque-resumo {
+      color: #ffffff !important;
+    }
+
+  /* ✅ FIX 3: fichaCategoria com imagem vertical e info em colunas */
+.ficha-categoria {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 0 0 12px 0;
+}
+
+/* imagem totalmente reta */
+.ficha-categoria img {
+  width: 48px;
+  height: 72px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ficha-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px 14px;
+  min-width: 0;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
+}
+
+.info-label {
+  opacity: 0.7;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 7px;
+  letter-spacing: 0.3px;
+}
+
+.info-valor {
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--tema-cor, #6366f1);
+  word-break: break-word;
+}
+    /* ✅ FIX 4: Barra de Navegação - cor adaptável ao tema */
+    .content-nav-bar {
+      display: flex;
+      gap: 8px;
+      padding: 10px 15px;
+      margin: 0 -15px 15px -15px;
+      background: rgba(255,255,255,0.03);
+      border-left: 3px solid var(--tema-cor, #6366f1);
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--tema-cor, #6366f1) transparent;
+    }
+    .content-nav-bar::-webkit-scrollbar { height: 4px; }
+    .content-nav-bar::-webkit-scrollbar-track { background: transparent; }
+    .content-nav-bar::-webkit-scrollbar-thumb {
+      background: var(--tema-cor, #6366f1);
+      border-radius: 2px;
+    }
+    .content-nav-item {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid transparent;
+      border-radius: 0;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--tema-cor, #6366f1);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .content-nav-item:hover, .content-nav-item.active {
+      background: var(--tema-cor, #6366f1);
+      color: #fff;
+      border-color: var(--tema-cor, #6366f1);
+    }
+    .content-nav-item.visto {
+      opacity: 0.7;
+      text-decoration: line-through;
+    }
+
+    /* ✅ FIX 5: Seção Recomendados com ícone 3px para esquerda */
+    .secao-produtos-banner {
+      margin: 15px -15px;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+    }
+    .banner-header {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin: 0 0 10px -3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--tema-cor, #6366f1);
+    }
+    .banner-lista {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+    .banner-produto-item {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s, transform 0.1s;
+      min-width: 0;
+    }
+    .banner-produto-item:active { transform: scale(0.98); }
+    .banner-produto-item:hover { background: rgba(255,255,255,0.1); }
+    .banner-img-box {
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #000;
+    }
+    .banner-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .banner-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+    .banner-titulo {
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .banner-desc {
+      font-size: 7px;
+      opacity: 0.85;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .banner-link-fake {
+      font-size: 7px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* ✅ FIX 6: Estados do botão de curtir */
+    .btn-premium-icon {
+      transition: transform 0.1s, color 0.2s;
+    }
+    .btn-premium-icon:active { transform: scale(0.95); }
+    .btn-premium-icon.liked {
+      color: var(--tema-cor, #6366f1);
+    }
+    .btn-premium-icon.liked i {
+      font-weight: 900;
+    }
+
+    /* ✅ FIX 7: Botão Próximo - posicionado à esquerda */
+    .btn-proximo {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--tema-cor, #6366f1);
+      border: 1px solid var(--tema-cor, #6366f1);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: auto;
+    }
+    .btn-proximo:hover, .btn-proximo:active {
+      background: var(--tema-cor, #6366f1);
+      color: #fff;
+    }
+    .btn-proximo.visto {
+      background: var(--tema-cor, #6366f1);
+      color: #fff;
+      animation: pulse-highlight 0.4s ease;
+    }
+    @keyframes pulse-highlight {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+
+    /* ✅ FIX 8: Botão Reportar Erro + Dropdown Menu - CORRIGIDO */
+    .btn-report {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--tema-cor, #ef4444);
+      border: 1px solid var(--tema-cor, #ef4444);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-report:hover, .btn-report:active {
+      background: var(--tema-cor, #ef4444);
+      color: #fff;
+    }
+    .menu-report-container {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-report {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      background: var(--bg-card, #1a1a1a);
+      border: 1px solid var(--tema-cor, #6366f1);
+      border-radius: 6px;
+      min-width: 240px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      pointer-events: auto;
+    }
+    .dropdown-report.show {
+      display: flex !important;
+    }
+    .dropdown-report a {
+      padding: 10px 14px;
+      font-size: 9px;
+      color: var(--anigeek-texto, #e5e5e5);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+    .dropdown-report a:last-child { border-bottom: none; }
+    .dropdown-report a:hover {
+      background: var(--tema-cor, #6366f1);
+      color: #fff;
+    }
+    .dropdown-report a i {
+      width: 14px;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    /* ✅ UX: Skeleton loading */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.4s infinite;
+      border-radius: 4px;
+    }
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ✅ UX: Feedback visual em botões mobile */
+    @media (hover: none) {
+      .btn-premium-icon, .btn-proximo, .banner-produto-item, .btn-report {
+        transition: background 0.15s;
+      }
+      .btn-premium-icon:active, .btn-proximo:active, .banner-produto-item:active, .btn-report:active {
+        background: rgba(255,255,255,0.2) !important;
+      }
+    }
+
+    /* ✅ UX: Navegação por teclado */
+    .destaque-secao:focus-within {
+      outline: 2px solid var(--tema-cor, #6366f1);
+      outline-offset: 2px;
+      border-radius: 0;
+    }
+
+    /* ✅ FIX 9: Fonte IM Fell DW Pica SC para títulos - TAMANHO AUMENTADO */
+    .im-fell-font {
+      font-family: "IM Fell DW Pica SC", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    .destaque-titulo {
+      font-family: "IM Fell DW Pica SC", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1.3;
+      margin: 0 0 8px 0;
+      letter-spacing: 0.3px;
+    }
+    /* ✅ Tema para títulos */
+    [data-theme="light"] .destaque-titulo {
+      color: #000000 !important;
+    }
+    [data-theme="dark"] .destaque-titulo {
+      color: #ffffff !important;
+    }
+
+    /* ✅ Responsividade mobile */
+    @media (max-width: 480px) {
+      .hero-topo-container {
+        margin-top: -80px;
+        margin-bottom: 80px;
+        border-radius: 0;
+      }
+      .hero-topo-img {
+        aspect-ratio: auto;
+        height: auto;
+        max-height: 220px;
+        object-fit: contain;
+        border-radius: 0;
+      }
+      .hero-topo-desc-bloco {
+        font-size: 10px;
+        padding: 10px 12px;
+      }
+      .banner-lista {
+        grid-template-columns: 1fr;
+      }
+      .ficha-info {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .ficha-categoria img {
+        width: 40px;
+        height: 60px;
+      }
+      .premium-actions-bar {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .btn-proximo {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 5px;
+      }
+      .content-nav-bar {
+        padding: 8px 12px;
+      }
+      .content-nav-item {
+        padding: 5px 10px;
+        font-size: 8px;
+      }
+      .destaque-titulo {
+        font-size: 18px;
+      }
+      .dropdown-report {
+        min-width: 220px;
+        right: -15px;
+      }
+      .premium-actions-bar {
+        overflow: visible !important;
+        position: relative;
+        z-index: 100;
+      }
+    }
+
+    /* ✅ Botão voltar ao topo - animação */
+    #btn-voltar-topo.visible {
+      display: flex !important;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 0.6; transform: translateY(0); }
+    }
+
+    /* ✅ Toast de reporte - animação */
+    #toast-report.mostrar {
+      display: block !important;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+    /* ✅ OCULTAR NOTIFICAÇÕES NO CARREGAMENTO INICIAL */
+    #notificacao-novo-artigo,
+    #notificacao-video,
+    #toast-copiado {
+      display: none !important;
+    }
+    /* ✅ Mostrar quando ativo via JS */
+    #notificacao-novo-artigo.ativo,
+    #notificacao-video.visivel,
+    #toast-copiado.mostrar {
+      display: flex !important;
+    }
+    /* ✅ SISTEMA DE USUÁRIOS: Indicadores visuais de engajamento */
+    .user-engagement-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 7px;
+      padding: 2px 6px;
+      background: rgba(99,102,241,0.15);
+      border-radius: 4px;
+      color: var(--tema-cor, #6366f1);
+      margin-left: 8px;
+    }
+    .user-engagement-badge i { font-size: 6px; }
+  </style>
+</head>
+<body>
+  <div class="destaque-wrapper">
+    <!-- ✅ Notificações e UI -->
+    <div id="notificacao-novo-artigo">
+      <i class="fa-solid fa-satellite-dish"></i>
+      <div>
+        <div style="font-size: 7px; font-weight: 800; opacity: 0.8; text-transform: uppercase;"></div>
+        <div id="novo-artigo-titulo" style="font-size: 9.1px; font-weight: 700;"></div>
+      </div>
+    </div>
+    <div id="ad-slot-top" class="ad-container-anigeek"></div>
+    <div id="hero-area"></div>
+    <div id="container-principal"></div>
+    <div id="ad-slot-bottom" class="ad-container-anigeek"></div>
+    <div id="pagination-control" style="text-align: center; padding: 21px; display: none;">
+      <button id="btn-carregar-mais" class="btn-paginacao-geek">
+        <i class="fa-solid fa-chevron-down"></i> Carregar mais conteúdos
+      </button>
+    </div>
+    <div id="notificacao-video">
+      <div style="flex: 1;">
+        <div style="font-size: 7px; font-weight: 800; opacity: 0.6; text-transform: uppercase;">Deseja assistir?</div>
+        <div id="notif-titulo" style="font-size: 9.1px; font-weight: 700;">Título</div>
+      </div>
+      <button class="btn-confirmar-video" id="btn-confirmar">Confirmar</button>
+      <i class="fa-solid fa-xmark" style="cursor:pointer; padding: 3.5px;" onclick="window.fecharNotif()"></i>
+    </div>
+    <div id="toast-copiado">link copiado</div>
+    <div id="toast-report" style="display:none;position:fixed;bottom:80px;right:20px;z-index:1001;background:var(--tema-cor,#22c55e);color:#fff;padding:10px 16px;border-radius:6px;font-size:10px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.3);max-width:200px;text-align:center;">
+      <i class="fa-solid fa-circle-check"></i> Reporte enviado! Obrigado.
+    </div>
+    <button id="btn-voltar-topo" style="display:none;position:fixed;bottom:20px;right:20px;z-index:1000;background:var(--tema-cor,rgba(99,102,241,0.6));color:#fff;border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;opacity:0.6;transition:opacity 0.2s;" onclick="window.scrollTo({top:0,behavior:'smooth'})" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+  </div>
+
+  <script type="module">
+    // ============================================================================
+    // ✅ SISTEMA DE USUÁRIOS E ENGAJAMENTO - MÓDULO INTEGRADO COM LOGS EXTENSIVOS
+    // Stack: HTML, CSS, JavaScript, Firebase (Auth Anônimo + Firestore)
+    // ============================================================================
+
+    console.log("🔍 [DEBUG] Módulo JS iniciado | Timestamp:", new Date().toISOString());
+    console.log("🔍 [DEBUG] URL atual:", window.location.href);
+    console.log("🔍 [DEBUG] document.readyState:", document.readyState);
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    console.log("✅ [SUCCESS] Firebase app module importado");
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    console.log("✅ [SUCCESS] Firebase auth module importado");
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment, getDoc, setDoc, addDoc, arrayUnion, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    console.log("✅ [SUCCESS] Firebase firestore module importado");
+
+    // Configuração Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBC_ad4X9OwCHKvcG_pNQkKEl76Zw2tu6o",
+      authDomain: "anigeeknews.firebaseapp.com",
+      projectId: "anigeeknews",
+      storageBucket: "anigeeknews.firebasestorage.app",
+      messagingSenderId: "769322939926",
+      appId: "1:769322939926:web:6eb91a96a3f74670882737",
+      measurementId: "G-G5T8CCRGZT"
+    };
+    console.log("🔍 [DEBUG] Firebase config carregado | projectId:", firebaseConfig.projectId);
+
+    // Inicialização Firebase com try-catch robusto
+    let app, db, auth;
+    try {
+      app = initializeApp(firebaseConfig);
+      console.log("✅ [SUCCESS] Firebase app inicializado | Name:", app.name);
+      db = getFirestore(app);
+      console.log("✅ [SUCCESS] Firestore instance obtida");
+      auth = getAuth(app);
+      console.log("✅ [SUCCESS] Auth instance obtida | currentUser:", auth.currentUser?.uid || "null");
+    } catch (error) {
+      console.error("❌ [ERROR] CRÍTICO: Falha na inicialização do Firebase:", error);
+      console.error("❌ [ERROR] Stack trace:", error.stack);
+      window.firebaseInitError = error;
+    }
+
+    // ============================================================================
+    // ✅ VARIÁVEIS GLOBAIS DO SISTEMA DE USUÁRIOS
+    // ============================================================================
+    let currentUserUID = null;
+    let userAuthReady = false;
+    let retentionTimer = null;
+    let retentionAccumulated = 0;
+    let retentionLastTick = null;
+    let retentionPaused = false;
+    let retentionSyncInterval = null;
+    let dailyLoginRegistered = false;
+    let viewTracking = new Map();
+    let likeTracking = new Map();
+    console.log("🔍 [DEBUG] Variáveis globais de usuário inicializadas");
+
+    // ============================================================================
+    // ✅ FUNÇÕES DE UTILIDADE - DATAS E TEMPO
+    // ============================================================================
+    function getCurrentDateKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getCurrentTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+
+    function getTimestampSeconds() {
+      return Math.floor(Date.now() / 1000);
+    }
+    console.log("✅ [SUCCESS] Funções utilitárias de data definidas");
+
+    // ============================================================================
+    // ✅ AUTENTICAÇÃO ANÔNIMA - FIREBASE AUTH
+    // ============================================================================
+    async function initializeAnonymousAuth() {
+      console.log("🔍 [DEBUG] initializeAnonymousAuth: Iniciando fluxo de auth");
+      return new Promise((resolve, reject) => {
+        console.log("🔍 [DEBUG] onAuthStateChanged: Registrando listener");
+        onAuthStateChanged(auth, async (user) => {
+          console.log("🔍 [DEBUG] onAuthStateChanged: Callback executado | user =", user?.uid || "null");
+          if (user) {
+            console.log("✅ [SUCCESS] Usuário já autenticado | UID:", user.uid);
+            currentUserUID = user.uid;
+            await ensureUserDocumentExists(user.uid);
+            userAuthReady = true;
+            console.log("✅ [SUCCESS] ensureUserDocumentExists concluído");
+            await registerDailyLogin(user.uid);
+            console.log("✅ [SUCCESS] registerDailyLogin concluído");
+            startRetentionTracking();
+            console.log("✅ [SUCCESS] startRetentionTracking iniciado");
+            resolve(user.uid);
+          } else {
+            console.log("ℹ️ [INFO] Nenhum usuário autenticado - tentando signInAnonymously");
+            try {
+              console.log("🔍 [DEBUG] Executando signInAnonymously...");
+              const userCredential = await signInAnonymously(auth);
+              console.log("✅ [SUCCESS] signInAnonymously concluído | UID:", userCredential.user.uid);
+              currentUserUID = userCredential.user.uid;
+              await ensureUserDocumentExists(currentUserUID);
+              userAuthReady = true;
+              await registerDailyLogin(currentUserUID);
+              startRetentionTracking();
+              resolve(currentUserUID);
+            } catch (error) {
+              console.error("❌ [ERROR] Falha em signInAnonymously:", error);
+              console.error("❌ [ERROR] Stack:", error.stack);
+              reject(error);
+            }
+          }
+        }, (error) => {
+          console.error("❌ [ERROR] onAuthStateChanged reject:", error);
+          reject(error);
+        });
+      });
+    }
+
+    // ============================================================================
+    // ✅ ESTRUTURA DO DOCUMENTO DO USUÁRIO - Firestore
+    // ============================================================================
+    async function ensureUserDocumentExists(uid) {
+      console.log("🔍 [DEBUG] ensureUserDocumentExists: Verificando documento para UID:", uid);
+      try {
+        const userRef = doc(db, "user_animegeek", uid);
+        console.log("🔍 [DEBUG] userRef criado:", userRef.path);
+        const userSnap = await getDoc(userRef);
+        console.log("🔍 [DEBUG] getDoc concluído | exists:", userSnap.exists());
+        if (!userSnap.exists()) {
+          console.log("ℹ️ [INFO] Documento não existe - criando novo");
+          await setDoc(userRef, {
+            auth: {
+              uid: uid,
+              provider: "anonymous",
+              first_seen: serverTimestamp()
+            },
+            logins: {},
+            retencao: {},
+            curtidas: {},
+            visualizacoes: {},
+            last_updated: serverTimestamp()
+          });
+          console.log("✅ [SUCCESS] Documento do usuário criado com sucesso");
+        } else {
+          console.log("ℹ️ [INFO] Documento já existe - nada a fazer");
+        }
+      } catch (error) {
+        console.error("❌ [ERROR] ensureUserDocumentExists falhou:", error);
+        console.error("❌ [ERROR] Stack:", error.stack);
+      }
+    }
+
+    // ============================================================================
+    // ✅ LOGIN DIÁRIO - 1 REGISTRO POR DIA (YYYY-MM-DD)
+    // ============================================================================
+    async function registerDailyLogin(uid) {
+      console.log("🔍 [DEBUG] registerDailyLogin: UID =", uid, "| dailyLoginRegistered =", dailyLoginRegistered);
+      if (dailyLoginRegistered) {
+        console.log("ℹ️ [INFO] Login diário já registrado nesta sessão - pulando");
+        return;
+      }
+      const dateKey = getCurrentDateKey();
+      console.log("🔍 [DEBUG] dateKey calculada:", dateKey);
+      try {
+        const userRef = doc(db, "user_animegeek", uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          console.warn("⚠️ [WARN] Documento do usuário não encontrado para login diário");
+          return;
+        }
+        const userData = userSnap.data();
+        console.log("🔍 [DEBUG] userData.logins:", userData.logins);
+        if (userData.logins && userData.logins[dateKey]) {
+          console.log("ℹ️ [INFO] Login para", dateKey, "já existe - não registrando novamente");
+          dailyLoginRegistered = true;
+          return;
+        }
+        console.log("ℹ️ [INFO] Registrando novo login para", dateKey);
+        await updateDoc(userRef, {
+          [`logins.${dateKey}`]: {
+            hora: getCurrentTime(),
+            registered_at: serverTimestamp()
+          },
+          last_updated: serverTimestamp()
+        });
+        dailyLoginRegistered = true;
+        console.log("✅ [SUCCESS] Login diário registrado:", { uid, dateKey, hora: getCurrentTime() });
+      } catch (error) {
+        console.error("❌ [ERROR] registerDailyLogin falhou:", error);
+        console.error("❌ [ERROR] Stack:", error.stack);
+      }
+    }
+
+    // ============================================================================
+    // ✅ SISTEMA DE RETENÇÃO - TEMPO DE PERMANÊNCIA ATIVA
+    // ============================================================================
+    function startRetentionTracking() {
+      console.log("🔍 [DEBUG] startRetentionTracking: currentUserUID =", currentUserUID);
+      if (!currentUserUID) {
+        console.warn("⚠️ [WARN] startRetentionTracking abortado: currentUserUID é null");
+        return;
+      }
+      retentionLastTick = Date.now();
+      retentionPaused = false;
+      console.log("✅ [SUCCESS] Retention timer iniciado | tick inicial:", retentionLastTick);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      document.addEventListener('focus', handleFocus);
+      document.addEventListener('blur', handleBlur);
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      console.log("✅ [SUCCESS] Event listeners de retenção registrados");
+      retentionSyncInterval = setInterval(() => {
+        console.log("🔍 [DEBUG] Sync de retenção periódico executado");
+        syncRetentionToFirestore();
+      }, 60000);
+      console.log("✅ [SUCCESS] Intervalo de sync de retenção configurado (60s)");
+    }
+
+    function handleVisibilityChange() {
+      console.log("🔍 [DEBUG] visibilitychange | document.hidden =", document.hidden);
+      if (document.hidden) {
+        pauseRetention();
+      } else {
+        resumeRetention();
+      }
+    }
+    function handleFocus() { console.log("🔍 [DEBUG] focus event"); resumeRetention(); }
+    function handleBlur() { console.log("🔍 [DEBUG] blur event"); pauseRetention(); }
+
+    function pauseRetention() {
+      if (retentionPaused || !retentionLastTick) return;
+      const elapsed = Math.floor((Date.now() - retentionLastTick) / 1000);
+      retentionAccumulated += elapsed;
+      retentionPaused = true;
+      retentionLastTick = null;
+      console.log("🔍 [DEBUG] Retention pausada | acumulado:", retentionAccumulated, "s");
+    }
+    function resumeRetention() {
+      if (!retentionPaused) return;
+      retentionPaused = false;
+      retentionLastTick = Date.now();
+      console.log("🔍 [DEBUG] Retention retomada | novo tick:", retentionLastTick);
+    }
+    function getAccumulatedRetention() {
+      if (retentionPaused || !retentionLastTick) {
+        return retentionAccumulated;
+      }
+      const currentElapsed = Math.floor((Date.now() - retentionLastTick) / 1000);
+      return retentionAccumulated + currentElapsed;
+    }
+
+    async function syncRetentionToFirestore() {
+      console.log("🔍 [DEBUG] syncRetentionToFirestore: UID =", currentUserUID, "| paused =", retentionPaused);
+      if (!currentUserUID || retentionPaused) return;
+      const totalSeconds = getAccumulatedRetention();
+      console.log("🔍 [DEBUG] totalSeconds para sync:", totalSeconds);
+      if (totalSeconds === 0) {
+        console.log("ℹ️ [INFO] Nenhum tempo acumulado para sincronizar");
+        return;
+      }
+      const dateKey = getCurrentDateKey();
+      const userRef = doc(db, "user_animegeek", currentUserUID);
+      try {
+        console.log("🔍 [DEBUG] Atualizando Firestore...");
+        await updateDoc(userRef, {
+          [`retencao.${dateKey}.tempo_total_segundos`]: increment(totalSeconds),
+          last_updated: serverTimestamp()
+        });
+        console.log("✅ [SUCCESS] Retenção sincronizada | data:", dateKey, "| segundos:", totalSeconds);
+        retentionAccumulated = 0;
+        retentionLastTick = Date.now();
+      } catch (error) {
+        console.error("❌ [ERROR] syncRetentionToFirestore falhou:", error);
+        console.error("❌ [ERROR] Stack:", error.stack);
+      }
+    }
+
+    function handleBeforeUnload() {
+      console.log("🔍 [DEBUG] beforeunload: sincronizando retenção final");
+      syncRetentionToFirestore();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener('focus', handleFocus);
+      document.removeEventListener('blur', handleBlur);
+      if (retentionSyncInterval) {
+        clearInterval(retentionSyncInterval);
+        console.log("✅ [SUCCESS] Intervalo de retenção limpo");
+      }
+    }
+
+    // ============================================================================
+    // ✅ SISTEMA DE CURTIDAS - ÚNICA POR USUÁRIO POR TÍTULO
+    // ============================================================================
+    async function registerUserLike(uid, animeId, titulo) {
+      console.log("🔍 [DEBUG] registerUserLike: uid =", uid, "| animeId =", animeId);
+      if (!uid || !animeId) {
+        console.warn("⚠️ [WARN] registerUserLike: parâmetros inválidos");
+        return false;
+      }
+      const cacheKey = `${uid}_like_${animeId}`;
+      if (likeTracking.has(cacheKey) && likeTracking.get(cacheKey) === true) {
+        console.log("ℹ️ [INFO] Curtida já registrada em cache local");
+        return false;
+      }
+      try {
+        const userRef = doc(db, "user_animegeek", uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          console.warn("⚠️ [WARN] Documento do usuário não encontrado para curtida");
+          return false;
+        }
+        const userData = userSnap.data();
+        if (userData.curtidas && userData.curtidas[animeId]) {
+          console.log("ℹ️ [INFO] Usuário já curtiu este animeId no Firestore");
+          likeTracking.set(cacheKey, true);
+          return false;
+        }
+        console.log("ℹ️ [INFO] Registrando nova curtida...");
+        const batch = writeBatch(db);
+        batch.update(userRef, {
+          [`curtidas.${animeId}`]: {
+            titulo: titulo,
+            curtida: true,
+            liked_at: serverTimestamp()
+          },
+          last_updated: serverTimestamp()
+        });
+        const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme", animeId);
+        batch.update(noticiaRef, {
+          curtidas: increment(1),
+          last_updated: serverTimestamp()
+        });
+        await batch.commit();
+        likeTracking.set(cacheKey, true);
+        console.log("✅ [SUCCESS] Curtida registrada com batch");
+        return true;
+      } catch (error) {
+        console.error("❌ [ERROR] registerUserLike falhou:", error);
+        console.error("❌ [ERROR] Stack:", error.stack);
+        return false;
+      }
+    }
+
+    function checkUserLikedLocally(animeId) {
+      if (!currentUserUID) return false;
+      const cacheKey = `${currentUserUID}_like_${animeId}`;
+      const result = likeTracking.has(cacheKey) && likeTracking.get(cacheKey) === true;
+      console.log("🔍 [DEBUG] checkUserLikedLocally:", { animeId, result });
+      return result;
+    }
+
+    // ============================================================================
+    // ✅ SISTEMA DE VISUALIZAÇÕES - CONTAGEM POR USUÁRIO
+    // ============================================================================
+    async function registerUserView(uid, animeId, titulo, videoDuration = null) {
+      console.log("🔍 [DEBUG] registerUserView: uid =", uid, "| animeId =", animeId, "| duration =", videoDuration);
+      if (!uid || !animeId) return;
+      const sessionKey = `view_session_${animeId}`;
+      if (sessionStorage.getItem(sessionKey) === 'true') {
+        console.log("ℹ️ [INFO] Visualização já registrada nesta sessão");
+        return;
+      }
+      const viewKey = `${uid}_view_${animeId}`;
+      if (viewTracking.has(viewKey)) {
+        console.log("ℹ️ [INFO] Visualização já confirmada em cache");
+        return;
+      }
+      if (videoDuration && videoDuration < 5) {
+        console.log("ℹ️ [INFO] Duração insuficiente (<5s) - não contando visualização");
+        return;
+      }
+      const userRef = doc(db, "user_animegeek", uid);
+      try {
+        const batch = writeBatch(db);
+        batch.update(userRef, {
+          [`visualizacoes.${animeId}`]: {
+            titulo: titulo,
+            viewed_at: serverTimestamp(),
+            duration_watched: videoDuration || null
+          },
+          last_updated: serverTimestamp()
+        });
+        const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme", animeId);
+        batch.update(noticiaRef, {
+          visualizacoes: increment(1),
+          lastViewed: serverTimestamp()
+        });
+        await batch.commit();
+        viewTracking.set(viewKey, true);
+        sessionStorage.setItem(sessionKey, 'true');
+        console.log("✅ [SUCCESS] Visualização registrada:", { animeId, titulo });
+      } catch (error) {
+        console.error("❌ [ERROR] registerUserView falhou:", error);
+        console.error("❌ [ERROR] Stack:", error.stack);
+      }
+    }
+
+    // ============================================================================
+    // ✅ FUNÇÕES DE TRACKING LEGADAS - MANTIDAS PARA COMPATIBILIDADE
+    // ============================================================================
+    function getVisitorId() {
+      let vid = localStorage.getItem('anigeek_vid');
+      if (!vid) {
+        vid = crypto.randomUUID ? crypto.randomUUID() : 'visitor-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+        localStorage.setItem('anigeek_vid', vid);
+        console.log("🔍 [DEBUG] Novo visitor ID gerado:", vid);
+      }
+      return vid;
+    }
+
+    window.registrarInteracao = async (docId, tipoAcao) => {
+      console.log("🔍 [DEBUG] registrarInteracao:", { docId, tipoAcao });
+      try {
+        const vid = currentUserUID || getVisitorId();
+        const ref = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme", docId, "visitantes", vid);
+        await setDoc(ref, {
+          lastActive: serverTimestamp(),
+          actions: arrayUnion({ type: tipoAcao, ts: Date.now() })
+        }, { merge: true });
+        console.log("✅ [SUCCESS] Interação registrada");
+      } catch (e) {
+        console.error("❌ [ERROR] registrarInteracao falhou:", e);
+      }
+    };
+
+    // ============================================================================
+    // ✅ FUNÇÕES DE UI E PERSISTÊNCIA - INTEGRADAS COM SISTEMA DE USUÁRIOS
+    // ============================================================================
+    function injectAdSafe(containerId, content) {
+      console.log("🔍 [DEBUG] injectAdSafe:", { containerId, hasContent: !!content });
+      const container = document.getElementById(containerId);
+      if (!container || !content) {
+        console.warn("⚠️ [WARN] injectAdSafe: container ou content inválido");
+        return;
+      }
+      container.innerHTML = '';
+      const range = document.createRange();
+      range.selectNode(container);
+      const fragment = range.createContextualFragment(content);
+      container.appendChild(fragment);
+      console.log("✅ [SUCCESS] Anúncio injetado com segurança");
+    }
+
+    function limparEspacos(url) { return url ? url.trim() : url; }
+
+    async function registrarVisualizacao(idNoticia, titulo = '', duration = null) {
+      console.log("🔍 [DEBUG] registrarVisualizacao:", { idNoticia, titulo, duration, currentUserUID, userAuthReady });
+      if (currentUserUID && userAuthReady) {
+        await registerUserView(currentUserUID, idNoticia, titulo, duration);
+      } else {
+        console.log("ℹ️ [INFO] Usando fallback legado para visualização");
+        const vid = getVisitorId();
+        const viewedKey = `anigeek_viewed_${idNoticia}`;
+        if (localStorage.getItem(viewedKey) === 'true') {
+          console.log("ℹ️ [INFO] Visualização já registrada em localStorage");
+          return;
+        }
+        try {
+          const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme", idNoticia);
+          await updateDoc(noticiaRef, {
+            visualizacoes: increment(1),
+            lastViewed: serverTimestamp()
+          });
+          localStorage.setItem(viewedKey, 'true');
+          const counterEl = document.querySelector(`#artigo-${idNoticia} .view-counter`);
+          if (counterEl) {
+            const current = parseInt(counterEl.dataset.count) || 0;
+            counterEl.dataset.count = current + 1;
+            counterEl.innerText = current + 1;
+            console.log("✅ [SUCCESS] Contador visual atualizado:", current + 1);
+          }
+        } catch(err) {
+          console.error("❌ [ERROR] registrarVisualizacao (fallback) falhou:", err);
+        }
+      }
+    }
+
+    // ============================================================================
+    // ✅ INICIALIZAÇÃO SEGURA DE EVENTOS DOM - COM LOGS EXTENSIVOS
+    // ============================================================================
+    function setupDOMEventListeners() {
+      console.log("🔍 [DEBUG] setupDOMEventListeners: Iniciando configuração de listeners");
+      console.log("🔍 [DEBUG] DOM elements check:");
+      console.log("  - #btn-confirmar:", document.getElementById('btn-confirmar'));
+      console.log("  - #btn-carregar-mais:", document.getElementById('btn-carregar-mais'));
+      console.log("  - #btn-voltar-topo:", document.getElementById('btn-voltar-topo'));
+
+      const btnConfirmar = document.getElementById('btn-confirmar');
+      if (btnConfirmar) {
+        console.log("✅ [SUCCESS] btn-confirmar encontrado - atribuindo onclick");
+        btnConfirmar.onclick = () => {
+          console.log("🔍 [DEBUG] btn-confirmar clicado");
+          const player = document.getElementById(playerAlvo);
+          if (player) {
+            console.log("🔍 [DEBUG] Player encontrado - atribuindo src:", urlAlvo);
+            player.src = urlAlvo;
+            const newsId = playerAlvo.split('-')[1];
+            registrarVisualizacao(newsId, '', 5);
+          } else {
+            console.warn("⚠️ [WARN] Player não encontrado para playerAlvo:", playerAlvo);
+          }
+          window.fecharNotif();
+        };
+      } else {
+        console.warn("⚠️ [WARN] #btn-confirmar NÃO encontrado no DOM - pulando atribuição");
+      }
+
+      const btnCarregarMais = document.getElementById('btn-carregar-mais');
+      if (btnCarregarMais) {
+        console.log("✅ [SUCCESS] btn-carregar-mais encontrado - atribuindo onclick");
+        btnCarregarMais.onclick = (e) => {
+          console.log("🔍 [DEBUG] btn-carregar-mais clicado");
+          e?.stopPropagation?.();
+          noticiasExibidas += 5;
+          console.log("🔍 [DEBUG] noticiasExibidas atualizado:", noticiasExibidas);
+          renderizarNoticias();
+        };
+      } else {
+        console.warn("⚠️ [WARN] #btn-carregar-mais NÃO encontrado no DOM - pulando atribuição");
+      }
+
+      const btnVoltarTopo = document.getElementById('btn-voltar-topo');
+      if (btnVoltarTopo) {
+        console.log("✅ [SUCCESS] btn-voltar-topo encontrado - atribuindo onclick");
+        btnVoltarTopo.onclick = (e) => {
+          console.log("🔍 [DEBUG] btn-voltar-topo clicado");
+          e?.preventDefault?.();
+          window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+      } else {
+        console.warn("⚠️ [WARN] #btn-voltar-topo NÃO encontrado no DOM - pulando atribuição");
+      }
+
+      console.log("✅ [SUCCESS] setupDOMEventListeners concluído");
+    }
+
+    // --- HANDLERS DE UI E PERSISTÊNCIA ---
+    window.handlePlayerAd = (playerId, linkArtigo) => {
+      console.log("🔍 [DEBUG] handlePlayerAd:", { playerId, linkArtigo });
+      if (!playersAdList.has(playerId)) {
+        playersAdList.add(playerId);
+        const idLimpo = playerId.replace('player-', '');
+        window.lastArticleId = idLimpo;
+        if (window.saveStateGlobal) window.saveStateGlobal();
+        window.registrarInteracao(idLimpo, 'player_click');
+        registrarVisualizacao(idLimpo, '', null);
+        const linkFinal = (linkArtigo && linkArtigo.trim() !== "") ? linkArtigo : linkPropaganda;
+        console.log("🔍 [DEBUG] Abrindo link de propaganda:", linkFinal);
+        window.open(linkFinal, '_blank');
+        const overlay = document.querySelector(`.overlay-player-${idLimpo}`);
+        if (overlay) {
+          overlay.remove();
+          console.log("✅ [SUCCESS] Overlay removido");
+        }
+      } else {
+        console.log("ℹ️ [INFO] Player já processado - ignorando clique duplicado");
+      }
+    };
+
+    window.shareNews = (titulo, url) => {
+      console.log("🔍 [DEBUG] shareNews:", { titulo, url });
+      if (navigator.share) {
+        navigator.share({ title: 'AniGeek: ' + titulo, text: 'Confira no AniGeek:', url: url }).catch(console.error);
+      } else { window.copiarLink(url); }
+    };
+
+    window.copiarLink = async (url) => {
+      console.log("🔍 [DEBUG] copiarLink:", url);
+      try {
+        await navigator.clipboard.writeText(url);
+        const toast = document.getElementById('toast-copiado');
+        if (toast) {
+          toast.classList.add('mostrar');
+          setTimeout(() => toast.classList.remove('mostrar'), 2500);
+          console.log("✅ [SUCCESS] Link copiado e toast exibido");
+        }
+      } catch (err) { console.error("❌ [ERROR] copiarLink falhou:", err); }
+    };
+
+    window.pedirTroca = (idPlayer, idVideo, titulo, cor) => {
+      console.log("🔍 [DEBUG] pedirTroca:", { idPlayer, idVideo, titulo, cor });
+      playerAlvo = idPlayer;
+      const entrada = limparEspacos(idVideo);
+      urlAlvo = entrada.startsWith('http') ? entrada : `https://www.youtube.com/embed/${entrada}?autoplay=1`;
+      const notif = document.getElementById('notificacao-video');
+      const notifTitulo = document.getElementById('notif-titulo');
+      if(notifTitulo) notifTitulo.innerText = titulo;
+      if(notif) {
+        notif.style.setProperty('--notif-cor', cor);
+        notif.classList.add('visivel');
+        console.log("✅ [SUCCESS] Notificação de vídeo exibida");
+      }
+    };
+
+    window.fecharNotif = () => {
+      console.log("🔍 [DEBUG] fecharNotif chamado");
+      const notif = document.getElementById('notificacao-video');
+      if (notif) {
+        notif.classList.remove('visivel');
+        console.log("✅ [SUCCESS] Notificação fechada");
+      }
+    };
+
+    // ✅ Sistema de curtidas COM SISTEMA DE USUÁRIOS
+    window.curtirNoticia = async (idNoticia, event) => {
+      console.log("🔍 [DEBUG] curtirNoticia:", { idNoticia, event: !!event, currentUserUID, userAuthReady });
+      if (event) event.stopPropagation();
+      if (checkUserLikedLocally(idNoticia)) {
+        console.log("ℹ️ [INFO] Usuário já curtiu este item localmente");
+        return;
+      }
+      const noticia = todasAsNoticias.find(n => n.id === idNoticia);
+      const titulo = noticia?.titulo || 'Título não identificado';
+      console.log("🔍 [DEBUG] Título da notícia para curtida:", titulo);
+      if (currentUserUID && userAuthReady) {
+        const success = await registerUserLike(currentUserUID, idNoticia, titulo);
+        if (success && event?.currentTarget) {
+          const btn = event.currentTarget;
+          btn.classList.add('liked');
+          const icon = btn.querySelector('i');
+          if (icon) {
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+          }
+          const counter = btn.querySelector('.view-counter');
+          if (counter) {
+            const current = parseInt(counter.dataset.count) || 0;
+            counter.dataset.count = current + 1;
+            counter.innerText = current + 1;
+            console.log("✅ [SUCCESS] UI de curtida atualizada");
+          }
+        }
+      } else {
+        console.log("ℹ️ [INFO] Usando fallback legado para curtida");
+        const likedKey = `anigeek_liked_${idNoticia}`;
+        if (localStorage.getItem(likedKey) === 'true') return;
+        try {
+          const noticiaRef = doc(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme", idNoticia);
+          await updateDoc(noticiaRef, { curtidas: increment(1) });
+          localStorage.setItem(likedKey, 'true');
+          if (event?.currentTarget) {
+            const btn = event.currentTarget;
+            btn.classList.add('liked');
+            const icon = btn.querySelector('i');
+            if (icon) {
+              icon.classList.remove('fa-regular');
+              icon.classList.add('fa-solid');
+            }
+          }
+          console.log("✅ [SUCCESS] Curtida registrada via fallback");
+        } catch(err) { console.error("❌ [ERROR] curtirNoticia (fallback) falhou:", err); }
+      }
+    };
+
+    // ✅ SISTEMA DE REPORTE
+    window.reportarErro = async (idNoticia, tipoErro, event) => {
+      console.log("🔍 [DEBUG] reportarErro:", { idNoticia, tipoErro });
+      if (event) { event.stopPropagation?.(); event.preventDefault?.(); }
+      const dropdown = event?.currentTarget?.closest?.('.dropdown-report');
+      if (dropdown) dropdown.classList.remove('show');
+      try {
+        const vid = currentUserUID || getVisitorId();
+        const noticia = todasAsNoticias.find(n => n.id === idNoticia);
+        const tituloNoticia = noticia?.titulo || 'Título não identificado';
+        await addDoc(collection(db, "report"), {
+          noticiaId: idNoticia,
+          titulo: tituloNoticia,
+          tipo: tipoErro,
+          reportedBy: vid,
+          userAuthType: currentUserUID ? 'anonymous_authenticated' : 'anonymous_fallback',
+          timestamp: serverTimestamp()
+        });
+        const toast = document.getElementById('toast-report');
+        if (toast) {
+          toast.classList.add('mostrar');
+          setTimeout(() => toast.classList.remove('mostrar'), 3000);
+        }
+        window.registrarInteracao(idNoticia, 'report_submitted');
+        console.log("✅ [SUCCESS] Reporte enviado com sucesso");
+      } catch(err) {
+        console.error("❌ [ERROR] reportarErro falhou:", err);
+        alert("Não foi possível enviar o reporte. Tente novamente.");
+      }
+    };
+
+    window.toggleReportMenu = (event) => {
+      console.log("🔍 [DEBUG] toggleReportMenu");
+      if (event) event.stopPropagation();
+      const btn = event?.currentTarget;
+      const container = btn?.closest?.('.menu-report-container');
+      const dropdown = container?.querySelector?.('.dropdown-report');
+      if (dropdown) {
+        document.querySelectorAll('.dropdown-report.show').forEach(el => {
+          if (el !== dropdown) el.classList.remove('show');
+        });
+        dropdown.classList.toggle('show');
+        console.log("✅ [SUCCESS] Dropdown de reporte toggleado");
+      }
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest?.('.menu-report-container')) {
+        document.querySelectorAll('.dropdown-report.show').forEach(el => {
+          el.classList.remove('show');
+        });
+      }
+    });
+
+    function scrollToWithOffset(element, offset = 300) {
+      if (!element) {
+        console.warn("⚠️ [WARN] scrollToWithOffset: elemento não encontrado");
+        return;
+      }
+      const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: elementTop - offset, behavior: 'smooth' });
+      console.log("🔍 [DEBUG] Scroll executado para offset:", elementTop - offset);
+    }
+
+    window.irParaProximo = (currentId, event) => {
+      console.log("🔍 [DEBUG] irParaProximo:", currentId);
+      if (event) event.stopPropagation();
+      const currentArticle = document.getElementById(`artigo-${currentId}`);
+      if (currentArticle) {
+        currentArticle.classList.add('artigo-visto');
+        localStorage.setItem(`anigeek_seen_${currentId}`, 'true');
+      }
+      const btnProximo = event?.currentTarget;
+      if (btnProximo) btnProximo.classList.add('visto');
+      const currentIndex = todasAsNoticias.findIndex(n => n.id === currentId);
+      if (currentIndex === -1 || currentIndex >= todasAsNoticias.length - 1) {
+        console.log("ℹ️ [INFO] Próximo item não disponível");
+        return;
+      }
+      const nextNoticia = todasAsNoticias[currentIndex + 1];
+      const nextElement = document.getElementById(`artigo-${nextNoticia.id}`);
+      if (nextElement) {
+        scrollToWithOffset(nextElement, 300);
+        nextElement.style.animation = 'pulse-highlight 0.6s ease';
+        setTimeout(() => { nextElement.style.animation = ''; }, 600);
+        registrarVisualizacao(nextNoticia.id);
+      }
+    };
+
+    window.navegarParaConteudo = (targetId, event) => {
+      console.log("🔍 [DEBUG] navegarParaConteudo:", targetId);
+      if (event) event.stopPropagation();
+      document.querySelectorAll('.content-nav-item').forEach(el => el.classList.remove('active'));
+      if (event?.currentTarget) event.currentTarget.classList.add('active');
+      const targetElement = document.getElementById(`artigo-${targetId}`);
+      if (targetElement) {
+        scrollToWithOffset(targetElement, 300);
+        registrarVisualizacao(targetId);
+      } else {
+        console.log("ℹ️ [INFO] Elemento não encontrado - verificando se precisa carregar mais");
+        const targetIndex = todasAsNoticias.findIndex(n => n.id === targetId);
+        if (targetIndex === -1) return;
+        const neededExibidas = targetIndex + 1;
+        if (neededExibidas > noticiasExibidas) {
+          noticiasExibidas = neededExibidas;
+          renderizarNoticias();
+          setTimeout(() => {
+            const el = document.getElementById(`artigo-${targetId}`);
+            if (el) {
+              scrollToWithOffset(el, 300);
+              registrarVisualizacao(targetId);
+            }
+          }, 150);
+        }
+      }
+    };
+
+    function verificarNoticiaNaUrl() {
+      console.log("🔍 [DEBUG] verificarNoticiaNaUrl");
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) { console.log("ℹ️ [INFO] Sem parâmetro 'id' na URL"); return; }
+      console.log("🔍 [DEBUG] ID da URL:", id);
+      const artigo = document.getElementById(`artigo-${id}`);
+      if (artigo) {
+        scrollToWithOffset(artigo, 300);
+        artigo.classList.add('destacado');
+        setTimeout(() => artigo.classList.remove('destacado'), 3000);
+        const url = new URL(window.location);
+        url.searchParams.delete('id');
+        window.history.replaceState({}, '', url);
+        registrarVisualizacao(id);
+        console.log("✅ [SUCCESS] Artigo destacado e URL limpa");
+      } else {
+        console.warn("⚠️ [WARN] Artigo com id", id, "não encontrado no DOM");
+      }
+    }
+
+    async function injetarComentariosDinamicos() {
+      console.log("🔍 [DEBUG] injetarComentariosDinamicos");
+      const containers = document.querySelectorAll('.container-comentarios-dinamico');
+      if (containers.length === 0) {
+        console.log("ℹ️ [INFO] Nenhum container de comentários encontrado");
+        return;
+      }
+      try {
+        if (!window.comentariosCarregados) {
+          console.log("ℹ️ [INFO] Carregando módulo de comentários...");
+          await import('./comentarios/comentarios.js');
+          window.comentariosCarregados = true;
+          console.log("✅ [SUCCESS] Módulo de comentários carregado");
+        }
+      } catch (err) { console.error("❌ [ERROR] Falha ao carregar comentários:", err); }
+    }
+
+    function renderizarHero(primeiraNoticia) {
+      console.log("🔍 [DEBUG] renderizarHero");
+      const heroArea = document.getElementById('hero-area');
+      if (!heroArea) { console.warn("⚠️ [WARN] #hero-area não encontrado"); return; }
+      if (!primeiraNoticia || !primeiraNoticia.capaUrl) { console.log("ℹ️ [INFO] Dados da hero insuficientes"); return; }
+      heroArea.innerHTML = `
+      <div class="hero-topo-container">
+        <img src="${limparEspacos(primeiraNoticia.capaUrl)}" class="hero-topo-img" alt="Capa Principal">
+      </div>
+      ${primeiraNoticia.capaDesc ? `<div class="hero-topo-desc-bloco">${primeiraNoticia.capaDesc}</div>` : ''}`;
+      console.log("✅ [SUCCESS] Hero renderizado");
+    }
+
+    // --- CORE DE RENDERIZAÇÃO ---
+    function renderizarNoticias() {
+      console.log("🔍 [DEBUG] renderizarNoticias: noticiasExibidas =", noticiasExibidas, "| total =", todasAsNoticias.length);
+      const container = document.getElementById('container-principal');
+      const btnPaginacao = document.getElementById('pagination-control');
+      if (!container) {
+        console.error("❌ [ERROR] #container-principal não encontrado - abortando render");
+        return;
+      }
+      container.innerHTML = '';
+      const baseUrl = window.location.origin + window.location.pathname;
+      if (todasAsNoticias.length > 0) renderizarHero(todasAsNoticias[0]);
+      const listaParaExibir = todasAsNoticias.slice(0, noticiasExibidas);
+      console.log("🔍 [DEBUG] Renderizando", listaParaExibir.length, "notícias");
+      listaParaExibir.forEach((news, index) => {
+        console.log(`🔍 [DEBUG] Renderizando notícia ${index + 1}/${listaParaExibir.length}:`, news.id);
+        const shareUrl = `${baseUrl}?id=${encodeURIComponent(news.id)}`;
+        const imgFeed = news.capaNoticia || news.capaUrl;
+        const overlayEstilo = playersAdList.has(`player-${news.id}`) ? 'display:none;' : '';
+        const alreadyLiked = checkUserLikedLocally(news.id) || localStorage.getItem(`anigeek_liked_${news.id}`) === 'true';
+        const likeClass = alreadyLiked ? 'liked' : '';
+        const likeIconClass = alreadyLiked ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up';
+        const seenKey = `anigeek_seen_${news.id}`;
+        const artigoVistoClass = localStorage.getItem(seenKey) === 'true' ? 'artigo-visto' : '';
+        const temaCor = news.cor || '#6366f1';
+        const engagementBadge = currentUserUID ? `<span class="user-engagement-badge"><i class="fa-solid fa-user"></i> Conectado</span>` : '';
+        const html = `
+        <article class="destaque-secao ${artigoVistoClass}" id="artigo-${news.id}" style="--tema-cor: ${temaCor}" tabindex="0" onclick="window.lastArticleId='${news.id}'">
+          <div class="destaque-padding">
+            ${imgFeed ? `<div class="noticia-capa" style="margin: -15px -15px 15px -15px;"><img src="${limparEspacos(imgFeed)}" style="width: 100%; aspect-ratio: 16 / 9; border-radius: 0; object-fit: cover; display: block;"></div>` : ''}
+            <div class="destaque-categoria"><i class="fa-solid fa-hashtag"></i> ${news.categoria}</div>
+            <div class="destaque-header">
+              <h2 class="destaque-titulo im-fell-font">${news.titulo}</h2>
+              <div class="menu-opcoes-container" tabindex="0">
+                <button class="btn-tres-pontos"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                <div class="dropdown-conteudo header-dropdown">
+                  <a href="#" onclick="event.preventDefault(); window.copiarLink('${shareUrl}');">Copiar Link</a>
+                  <a href="#" onclick="event.preventDefault(); window.shareNews('${news.titulo}', '${shareUrl}');">Compartilhar</a>
+                </div>
+              </div>
+            </div>
+            ${news.fichaCategoria ? `
+            <div class="ficha-categoria" style="border-left-color: ${news.fichaCategoria.cor || temaCor}">
+              <img src="${limparEspacos(news.fichaCategoria.perfilImg)}" alt="${news.titulo}">
+              <div class="ficha-info">
+                ${news.fichaCategoria.info ? news.fichaCategoria.info.map(item => `
+                <div class="info-item"><span class="info-label">${item.label}:</span> <span class="info-valor" style="color:${temaCor}">${item.valor}</span></div>`).join('') : ''}
+              </div>
+            </div>` : ''}
+            <p class="destaque-resumo">${news.resumo}</p>
+            <a href="${news.linkArtigo}" class="btn-ver-artigo" target="_blank"><i class="fa-solid fa-download"></i> Baixar</a>
+            <div class="destaque-info-grid">
+              ${news.ficha ? news.ficha.map(item => `<div class="info-item"><span class="info-label">${item.label}</span><span class="info-valor" style="color:${temaCor}">${item.valor}</span></div>`).join('') : ''}
+            </div>
+          </div>
+          <div class="destaque-media">
+            <div class="player-overlay-ad overlay-player-${news.id}" style="${overlayEstilo}" onclick="handlePlayerAd('player-${news.id}', '${news.linkPropagandaArtigo || ''}')"></div>
+            <iframe id="player-${news.id}" src="${limparEspacos(news.videoPrincipal)}" allowfullscreen style="width: 100%; aspect-ratio: 16 / 9; border: none;" loading="lazy" onload="registrarVisualizacao('${news.id}', '${news.titulo.replace(/'/g, "\\'")}', 5)"></iframe>
+          </div>
+          <div class="premium-actions-bar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow:visible;position:relative;z-index:100;">
+            <button class="btn-proximo" onclick="irParaProximo('${news.id}', event)">
+              <i class="fa-solid fa-forward"></i> Próximo
+            </button>
+            <button class="btn-premium-icon ${likeClass}" onclick="curtirNoticia('${news.id}', event)"><i class="${likeIconClass}"></i> Útil (<span class="view-counter" data-count="${news.curtidas || 0}">${news.curtidas || 0}</span>)${engagementBadge}</button>
+            <button class="btn-premium-icon" onclick="event.stopPropagation(); window.shareNews('${news.titulo}', '${shareUrl}')"><i class="fa-solid fa-share-nodes"></i></button>
+            <button class="btn-premium-icon" onclick="event.stopPropagation()"><i class="fa-solid fa-chart-column"></i> <span class="view-counter" data-count="${news.visualizacoes || 0}">${news.visualizacoes || 0}</span></button>
+            <div class="menu-report-container" onclick="event.stopPropagation()">
+              <button class="btn-report" onclick="toggleReportMenu(event)">
+                <i class="fa-solid fa-flag"></i> Reportar
+              </button>
+              <div class="dropdown-report">
+                <a href="#" onclick="event.preventDefault(); reportarErro('${news.id}', 'conteudo_incorreto', event)">
+                  <i class="fa-solid fa-circle-xmark"></i> Episódio/Conteúdo incorreto
+                </a>
+                <a href="#" onclick="event.preventDefault(); reportarErro('${news.id}', 'conteudo_faltante', event)">
+                  <i class="fa-solid fa-folder-minus"></i> Episódio/Conteúdo faltando
+                </a>
+                <a href="#" onclick="event.preventDefault(); reportarErro('${news.id}', 'legenda_faltando', event)">
+                  <i class="fa-solid fa-closed-captioning-slash"></i> Legenda ausente no episódio
+                </a>
+                <a href="#" onclick="event.preventDefault(); reportarErro('${news.id}', 'inconsistencia_descricao', event)">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Conteúdo não condiz com a ficha
+                </a>
+                <a href="#" onclick="event.preventDefault(); reportarErro('${news.id}', 'titulo_incorreto', event)">
+                  <i class="fa-solid fa-tag-slash"></i> Título não corresponde ao conteúdo
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="carrossel-temas">
+            <div class="carrossel-header"><span class="temas-label">Vídeos Relacionados</span></div>
+            <div class="temas-scroll-wrapper"><div class="temas-container">
+              ${news.relacionados ? news.relacionados.map(rel => `
+              <div class="tema-card" onclick="event.stopPropagation(); window.pedirTroca('player-${news.id}', '${rel.idVid}', '${rel.titulo.replace(/'/g, "\\'")}', '${temaCor}')">
+                <img src="${limparEspacos(rel.thumb)}" class="tema-thumb" loading="lazy">
+                <div class="tema-titulo">${rel.titulo}</div>
+              </div>`).join('') : ''}
+            </div></div>
+          </div>
+          <div class="secao-produtos-banner">
+            <div class="banner-header"><i class="fa-solid fa-cart-shopping"></i> Recomendados</div>
+            <div class="banner-lista">
+              ${news.produtos ? news.produtos.map(prod => `
+              <a href="${limparEspacos(prod.link)}" target="_blank" class="banner-produto-item" onclick="event.stopPropagation(); window.registrarInteracao('${news.id}', 'ad_click')">
+                <div class="banner-img-box"><img src="${limparEspacos(prod.img)}" class="banner-thumb" alt="${prod.nome}"></div>
+                <div class="banner-info">
+                  <div class="banner-titulo">${prod.nome}</div>
+                  ${prod.desc ? `<div class="banner-desc">${prod.desc}</div>` : ''}
+                  <div class="banner-link-fake">Ver na loja</div>
+                </div>
+              </a>`).join('') : ''}
+            </div>
+          </div>
+          <div id="ad-artigo-${news.id}" class="ad-container-anigeek"></div>
+          <div class="container-comentarios-dinamico" data-noticia-id="${news.id}"></div>
+        </article>`;
+        container.insertAdjacentHTML('beforeend', html);
+        if(news.bannerAd) {
+          setTimeout(() => injectAdSafe(`ad-artigo-${news.id}`, news.bannerAd), 0);
+        }
+      });
+      renderizarBarraConteudo();
+      injetarComentariosDinamicos();
+      if (btnPaginacao) {
+        btnPaginacao.style.display = noticiasExibidas < todasAsNoticias.length ? 'block' : 'none';
+        console.log("🔍 [DEBUG] Paginação:", btnPaginacao.style.display);
+      }
+      window.noticiasExibidas = noticiasExibidas;
+      if (window.saveStateGlobal) window.saveStateGlobal();
+      console.log("✅ [SUCCESS] renderizarNoticias concluído");
+    }
+
+    function renderizarBarraConteudo() {
+      console.log("🔍 [DEBUG] renderizarBarraConteudo");
+      if (todasAsNoticias.length === 0) { console.log("ℹ️ [INFO] Sem notícias para barra"); return; }
+      const existingBar = document.getElementById('content-nav-bar-global');
+      if (existingBar) existingBar.remove();
+      const temaCorGlobal = todasAsNoticias[0]?.cor || '#6366f1';
+      const barHTML = `
+      <div id="content-nav-bar-global" class="content-nav-bar" style="--tema-cor: ${temaCorGlobal}">
+        ${todasAsNoticias.map((news, index) => {
+          const seenKey = `anigeek_seen_${news.id}`;
+          const vistoClass = localStorage.getItem(seenKey) === 'true' ? 'visto' : '';
+          const isActive = index === 0 ? 'active' : '';
+          return `<div class="content-nav-item ${vistoClass} ${isActive}" onclick="navegarParaConteudo('${news.id}', event)" title="${news.titulo}" style="--tema-cor: ${news.cor || temaCorGlobal}">
+            ${index + 1}. ${news.titulo.substring(0, 20)}${news.titulo.length > 20 ? '...' : ''}
+          </div>`;
+        }).join('')}
+      </div>`;
+      const heroArea = document.getElementById('hero-area');
+      if (heroArea) {
+        heroArea.insertAdjacentHTML('afterend', barHTML);
+        console.log("✅ [SUCCESS] Barra de conteúdo injetada");
+      } else {
+        console.warn("⚠️ [WARN] #hero-area não encontrado para injetar barra");
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const btnTopo = document.getElementById('btn-voltar-topo');
+      if (btnTopo) {
+        if (window.scrollY > 300) {
+          btnTopo.classList.add('visible');
+          const visibleArticle = document.querySelector('.destaque-secao:not([style*="display:none"])');
+          if (visibleArticle) {
+            const temaCor = visibleArticle.style.getPropertyValue('--tema-cor').trim() || '#6366f1';
+            btnTopo.style.background = `var(--tema-cor, ${temaCor})`;
+          }
+        } else {
+          btnTopo.classList.remove('visible');
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const articles = document.querySelectorAll('.destaque-secao');
+        if (articles.length === 0) return;
+        const currentIndex = Array.from(articles).findIndex(el => el.getBoundingClientRect().top > 100);
+        let targetIndex = e.key === 'ArrowDown' ? Math.min(currentIndex + 1, articles.length - 1) : Math.max(currentIndex - 1, 0);
+        if (currentIndex === -1) targetIndex = 0;
+        scrollToWithOffset(articles[targetIndex], 300);
+        articles[targetIndex].focus?.();
+      }
+    });
+
+    async function carregarConfiguracoesAds() {
+      console.log("🔍 [DEBUG] carregarConfiguracoesAds: Iniciando snapshot de ads");
+      onSnapshot(doc(db, "configuracoes", "ads"), (snap) => {
+        console.log("🔍 [DEBUG] onSnapshot ads: exists =", snap?.exists());
+        if(snap?.exists()) {
+          const d = snap.data();
+          console.log("🔍 [DEBUG] Dados de ads:", Object.keys(d || {}));
+          if(d.linkPropaganda) {
+            linkPropaganda = d.linkPropaganda.trim();
+            console.log("✅ [SUCCESS] linkPropaganda atualizado");
+          }
+          if(d.bannerTopo) {
+            injectAdSafe('ad-slot-top', d.bannerTopo);
+          }
+          if(d.bannerFundo) {
+            injectAdSafe('ad-slot-bottom', d.bannerFundo);
+          }
+        } else {
+          console.warn("⚠️ [WARN] Documento de configurações de ads não encontrado ou vazio");
+        }
+      }, (error) => {
+        console.error("❌ [ERROR] carregarConfiguracoesAds falhou:", error);
+      });
+    }
+
+    function carregarTudoRealTime() {
+      console.log("🔍 [DEBUG] carregarTudoRealTime: Iniciando snapshot de notícias");
+      console.log("🔍 [DEBUG] Firestore path: anigeeknews.web.app / filmes_animes_series_games_noticias / horimiya");
+      onSnapshot(collection(db, "anigeeknews.web.app", "filmes_animes_series_games_noticias", "jurassic_park_filme"), (snapshot) => {
+        console.log("🔍 [DEBUG] onSnapshot notícias: docs count =", snapshot?.size);
+        if (!snapshot) {
+          console.warn("⚠️ [WARN] Snapshot é null/undefined");
+          return;
+        }
+        todasAsNoticias = snapshot.docs.map(doc => {
+          console.log("🔍 [DEBUG] Doc ID:", doc.id);
+          return { id: doc.id, ...doc.data() };
+        });
+        todasAsNoticias.sort((a, b) => (a.ordem || 999) - (b.ordem || 999));
+        console.log("✅ [SUCCESS] Notícias ordenadas | Total:", todasAsNoticias.length);
+        if(todasAsNoticias.length > 0) {
+          const tituloEl = document.getElementById('novo-artigo-titulo');
+          if(tituloEl) {
+            tituloEl.innerText = todasAsNoticias[0].titulo;
+            console.log("✅ [SUCCESS] Título da primeira notícia definido");
+          }
+        }
+        renderizarNoticias();
+        setTimeout(verificarNoticiaNaUrl, 150);
+      }, (error) => {
+        console.error("❌ [ERROR] carregarTudoRealTime falhou:", error);
+        console.error("❌ [ERROR] Possíveis causas: regras do Firestore, caminho incorreto, permissões");
+      });
+    }
+
+    // ============================================================================
+    // ✅ INICIALIZAÇÃO DO SISTEMA - ORDEM CORRETA + LOGS EXTENSIVOS
+    // ============================================================================
+    (async function initializeSystem() {
+      console.log("🚀 [INIT] === INICIANDO SISTEMA ANIGEEK ===");
+      console.log("🔍 [DEBUG] document.readyState:", document.readyState);
+      console.log("🔍 [DEBUG] DOM elements pré-inicialização:");
+      console.log("  - #container-principal:", document.getElementById('container-principal'));
+      console.log("  - #hero-area:", document.getElementById('hero-area'));
+      console.log("  - #btn-carregar-mais:", document.getElementById('btn-carregar-mais'));
+
+      try {
+        console.log("🔍 [INIT] Fase 1: Autenticação");
+        await initializeAnonymousAuth();
+        console.log("✅ [SUCCESS] Fase 1 concluída | UID:", currentUserUID);
+
+        console.log("🔍 [INIT] Fase 2: Verificação de DOM readiness");
+        if (document.readyState === 'loading') {
+          console.log("ℹ️ [INFO] DOM ainda carregando - aguardando DOMContentLoaded");
+          document.addEventListener('DOMContentLoaded', () => {
+            console.log("✅ [SUCCESS] DOMContentLoaded disparado");
+            setupDOMEventListeners();
+          });
+        } else {
+          console.log("ℹ️ [INFO] DOM já pronto - configurando listeners imediatamente");
+          setupDOMEventListeners();
+        }
+
+        console.log("🔍 [INIT] Fase 3: Carregando configurações de anúncios");
+        carregarConfiguracoesAds();
+
+        console.log("🔍 [INIT] Fase 4: Carregando conteúdo em tempo real");
+        carregarTudoRealTime();
+
+        console.log("🔍 [INIT] Fase 5: Expondo funções de debug");
+        window.userSystemDebug = {
+          getUID: () => currentUserUID,
+          getRetention: () => getAccumulatedRetention(),
+          syncRetention: () => syncRetentionToFirestore(),
+          checkLiked: (id) => checkUserLikedLocally(id),
+          getTodasNoticias: () => todasAsNoticias,
+          forceRender: () => renderizarNoticias()
+        };
+        console.log("✅ [SUCCESS] Funções de debug expostas em window.userSystemDebug");
+
+        console.log("🎉 [INIT] === SISTEMA INICIALIZADO COM SUCESSO ===");
+
+      } catch (error) {
+        console.error("❌ [ERROR] CRÍTICO: Falha na inicialização do sistema");
+        console.error("❌ [ERROR] Mensagem:", error?.message);
+        console.error("❌ [ERROR] Stack:", error?.stack);
+        console.error("❌ [ERROR] Nome:", error?.name);
+        window.systemInitError = error;
+
+        console.log("ℹ️ [FALLBACK] Tentando carregamento mínimo sem auth...");
+        carregarConfiguracoesAds();
+        carregarTudoRealTime();
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setupDOMEventListeners);
+        } else {
+          setupDOMEventListeners();
+        }
+        console.log("✅ [FALLBACK] Modo de fallback ativado");
+      }
+    })();
+
+    // ============================================================================
+    // ✅ VARIÁVEIS GLOBAIS LEGADAS - MANTIDAS PARA COMPATIBILIDADE
+    // ============================================================================
+    let todasAsNoticias = [];
+    let noticiasExibidas = window.noticiasExibidas || 5;
+    let playerAlvo = '';
+    let urlAlvo = '';
+    let linkPropaganda = "https://www.effectivegatecpm.com/u1isyicizb?key=66934bf68fc6093a89704779bb57cce3";
+    let playersAdList = new Set();
+    console.log("✅ [SUCCESS] Variáveis legadas inicializadas");
+  </script>
+</body>
+</html>
