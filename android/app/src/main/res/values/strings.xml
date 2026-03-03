@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Grand Line Animes</string>
-    <string name="title_activity_main">Grand Line Animes</string>
+    <string name="app_name">Anime I Geek</string>
+    <string name="title_activity_main">Anime I Geek</string>
     <string name="package_name">com.grandline.animes</string>
     <string name="custom_url_scheme">com.grandline.animes</string>
 </resources>
